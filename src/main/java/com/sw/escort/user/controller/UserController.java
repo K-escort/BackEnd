@@ -10,7 +10,7 @@ import com.sw.escort.user.dto.req.UserDtoReq;
 import com.sw.escort.user.dto.res.KakaoUserInfoResponseDto;
 import com.sw.escort.user.dto.res.UserDtoRes;
 import com.sw.escort.user.entity.User;
-import com.sw.escort.user.service.KakaoService;
+//import com.sw.escort.user.service.KakaoService;
 import com.sw.escort.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,15 +28,15 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final KakaoService kakaoService;
-
-    @Operation(summary = "앱 카카오로그인 API", description = "앱에서 카카오 로그인")
-    @PostMapping("/kakao-login")
-    public ApiResponse<UserDtoRes.UserLoginRes> kakaoLogin(@RequestBody @Valid AccessTokenRequest request, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
-        KakaoUserInfoResponseDto userInfo = kakaoService.getUserInfo(request.getAccessToken());
-        User user = userService.kakaoSignup(userInfo);
-        return ApiResponse.onSuccess(userService.kakaoLogin(httpRequest, httpResponse, user));
-    }
+//    private final KakaoService kakaoService;
+//
+//    @Operation(summary = "앱 카카오로그인 API", description = "앱에서 카카오 로그인")
+//    @PostMapping("/kakao-login")
+//    public ApiResponse<UserDtoRes.UserLoginRes> kakaoLogin(@RequestBody @Valid AccessTokenRequest request, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+//        KakaoUserInfoResponseDto userInfo = kakaoService.getUserInfo(request.getAccessToken());
+//        User user = userService.kakaoSignup(userInfo);
+//        return ApiResponse.onSuccess(userService.kakaoLogin(httpRequest, httpResponse, user));
+//    }
 
     @Operation(summary = "이메일 로그인 API(테스트용)", description = "이메일로 JWT토큰 발급")
     @PostMapping("/login")
