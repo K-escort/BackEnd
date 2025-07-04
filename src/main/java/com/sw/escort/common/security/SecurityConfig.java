@@ -88,7 +88,10 @@ public class SecurityConfig {
         // 이후에 특정 출처만 하기!!!
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:8080",
-                "https://localhost:8080"
+                "https://localhost:8080",
+                "https://api.refrigerator.asia",
+                "http://api.refrigerator.asia",
+                "http://*.api.refrigerator.asia"
         ));
         configuration.setAllowCredentials(true); // 자격 증명 허용 (쿠키, 인증 정보 포함)
         configuration.addAllowedMethod("*");
