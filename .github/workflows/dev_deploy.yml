@@ -53,7 +53,7 @@ jobs:
           cp Procfile deploy/Procfile
           cp -r .ebextensions_release deploy/.ebextensions
           cp -r .platform deploy/.platform
-#          cp firebase-service-account.json deploy/firebase-service-account.json
+          cp firebase-service-account.json deploy/firebase-service-account.json
           cd deploy && zip -r deploy.zip .
 
       - name: Beanstalk Deploy
