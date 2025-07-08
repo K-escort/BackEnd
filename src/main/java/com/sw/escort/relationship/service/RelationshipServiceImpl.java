@@ -73,6 +73,11 @@ public class RelationshipServiceImpl implements RelationshipService {
         User target = userRepository.findByEmail(email)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
+        // 자기 자신 검색 방지
+        if (target.getId().equals(currentUserId)) {
+            throw new GeneralException(ErrorStatus.CANNOT_SEARCH_SELF);
+        }
+
         boolean alreadyRelated = relationshipRepository.existsByFromUserIdAndToUserId(currentUserId, target.getId());
 
         return UserSearchResponse.of(target, alreadyRelated);
@@ -81,10 +86,23 @@ public class RelationshipServiceImpl implements RelationshipService {
 
     @Override
     public void sendRequest(RequestReq req, Long senderId) {
+        Long receiverId = req.getReceiverId();
+
+        // 자기 자신에게 요청 방지
+        if (senderId.equals(receiverId)) {
+            throw new GeneralException(ErrorStatus.CANNOT_REQUEST_SELF);
+        }
+
+        // 이미 관계가 있는 경우 방지
+        boolean alreadyRelated = relationshipRepository.existsByFromUserIdAndToUserId(senderId, receiverId);
+        if (alreadyRelated) {
+            throw new GeneralException(ErrorStatus.ALREADY_RELATED);
+        }
+
         User sender = userRepository.findById(senderId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
-        User receiver = userRepository.findById(req.getReceiverId())
+        User receiver = userRepository.findById(receiverId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
 
