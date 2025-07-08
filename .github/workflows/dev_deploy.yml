@@ -21,7 +21,7 @@ jobs:
       - name: Checkout AI repo
         uses: actions/checkout@v2
         with:
-          repository: K-escort/Prython
+          repository: K-escort/Python
           token: ${{ secrets.GITHUB_TOKEN }}
           path: ai
           ref: main
