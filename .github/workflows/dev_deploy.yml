@@ -14,12 +14,17 @@ jobs:
     steps:
       - name: Checkout Spring repo
         uses: actions/checkout@v2
+        with:
+          path: spring
+
 
       - name: Checkout AI repo
         uses: actions/checkout@v2
         with:
-          repository: K-escort/python
+          repository: K-escort/Prython
           token: ${{ secrets.GITHUB_TOKEN }}
+          path: ai
+          ref: main
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
