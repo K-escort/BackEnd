@@ -39,6 +39,18 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_ACTION_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
 
+      - name: Grant execute permission for gradlew
+        run: chmod +x spring/gradlew
+        shell: bash
+
+      - name: Build with Gradle
+        run: cd spring && ./gradlew clean build -x test
+        shell: bash
+
+      - name: Check JAR file existence
+        run: ls -la spring/build/libs
+        shell: bash
+
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
@@ -67,15 +79,6 @@ jobs:
           echo "::set-output name=ai-image::$ECR_REGISTRY/$ECR_REPOSITORY:ai-$IMAGE_TAG"
         shell: bash
 
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
-        shell: bash
-
-      - name: Build with Gradle
-        run: ./gradlew clean build -x test
-        shell: bash
-
       - name: Get current time
         uses: 1466587594/get-current-time@v2
         id: current-time
@@ -90,10 +93,10 @@ jobs:
       - name: Generate deployment package
         run: |
           mkdir -p deploy
-          cp build/libs/*.jar deploy/application.jar
-          cp Procfile deploy/Procfile
-          cp -r .ebextensions_release deploy/.ebextensions
-          cp -r .platform deploy/.platform
+          cp spring/build/libs/*.jar deploy/application.jar
+          cp spring/Procfile deploy/Procfile
+          cp -r spring/.ebextensions_release deploy/.ebextensions
+          cp -r spring/.platform deploy/.platform
           cd deploy && zip -r deploy.zip .
 
       - name: Beanstalk Deploy
