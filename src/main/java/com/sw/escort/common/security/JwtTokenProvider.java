@@ -32,8 +32,9 @@ public class JwtTokenProvider {
 
     private Key secretKey;
 
-    public static final long TOKEN_VALID_TIME = 1000L * 60 * 60;  // 액세스 토큰 1시간
+    public static final long TOKEN_VALID_TIME = 1000L * 60 * 60 * 24;  // 액세스 토큰 24시간
     public static final long REFRESH_TOKEN_VALID_TIME = 1000L * 60 * 60 * 24 * 7; // 리프레시 토큰 1주일
+    public static final int REFRESH_TOKEN_VALID_TIME_IN_COOKIE = 60 * 60 * 24 * 7; // 리프레시  토큰 일주일(초) -쿠키
 
     private final CustomUserDetailsService userDetailService;
 
