@@ -43,16 +43,30 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
+      - name: Build, tag, and push Spring image to Amazon ECR
+        id: build-spring-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: escort-dev
           IMAGE_TAG: latest
         run: |
-          docker buildx build --platform=linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          docker buildx build --platform=linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:spring-$IMAGE_TAG -f spring/Dockerfile spring
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:spring-$IMAGE_TAG
+          echo "::set-output name=spring-image::$ECR_REGISTRY/$ECR_REPOSITORY:spring-$IMAGE_TAG"
+        shell: bash
+
+      - name: Build, tag, and push AI image to Amazon ECR
+        id: build-ai-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: escort-dev
+          IMAGE_TAG: latest
+        run: |
+          docker buildx build --platform=linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:ai-$IMAGE_TAG -f ai/Dockerfile ai
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:ai-$IMAGE_TAG
+          echo "::set-output name=ai-image::$ECR_REGISTRY/$ECR_REPOSITORY:ai-$IMAGE_TAG"
+        shell: bash
+
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
