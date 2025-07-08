@@ -1,13 +1,29 @@
 {
-  "AWSEBDockerrunVersion": "1",
-  "Image": {
-    "Name": "536697232498.dkr.ecr.ap-northeast-2.amazonaws.com/escort:latest",
-    "Update": "true"
-  },
-  "Ports": [
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [
     {
-      "ContainerPort": "8080",
-      "HostPort": "8080"
+      "name": "spring-app",
+      "image": "536697232498.dkr.ecr.ap-northeast-2.amazonaws.com/escort-dev:spring-latest",
+      "essential": true,
+      "memory": 512,
+      "portMappings": [
+        {
+          "hostPort": 8080,
+          "containerPort": 8080
+        }
+      ]
+    },
+    {
+      "name": "ai-app",
+      "image": "536697232498.dkr.ecr.ap-northeast-2.amazonaws.com/escort-dev:ai-latest",
+      "essential": true,
+      "memory": 512,
+      "portMappings": [
+        {
+          "hostPort": 5000,
+          "containerPort": 5000
+        }
+      ]
     }
   ]
 }
