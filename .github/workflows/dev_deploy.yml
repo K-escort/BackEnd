@@ -89,55 +89,57 @@ jobs:
         run: echo "CurrentTime=${{ steps.current-time.outputs.formattedTime }}"
         shell: bash
 
-      - name: Generate deployment package
+      - name: Generate deployment package for AL2023
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: escort-dev
           IMAGE_TAG: latest
         run: |
-          mkdir -p deploy
-          cat <<EOF > deploy/Dockerrun.aws.json
-          {
-            "AWSEBDockerrunVersion": 3,
-            "containerDefinitions": [
-              {
-                "name": "spring-app",
-                "image": "$ECR_REGISTRY/$ECR_REPOSITORY:spring-$IMAGE_TAG",
-                "essential": true,
-                "memory": 512,
-                "portMappings": [
-                  {
-                    "hostPort": 8080,
-                    "containerPort": 8080
-                  }
-                ]
-              },
-              {
-                "name": "ai-app",
-                "image": "$ECR_REGISTRY/$ECR_REPOSITORY:ai-$IMAGE_TAG",
-                "essential": true,
-                "memory": 512,
-                "portMappings": [
-                  {
-                    "hostPort": 5000,
-                    "containerPort": 5000
-                  }
-                ]
-              }
-            ]
-          }
+          mkdir -p deploy/.platform/hooks/predeploy
+          
+          # docker-compose.yml 생성
+          cat <<EOF > deploy/docker-compose.yml
+          version: "3"
+          services:
+          spring:
+           image: $ECR_REGISTRY/$ECR_REPOSITORY:spring-$IMAGE_TAG
+           ports:
+             - "8080:8080"
+          ai:
+           image: $ECR_REGISTRY/$ECR_REPOSITORY:ai-$IMAGE_TAG
+           ports:
+             - "5000:5000"
           EOF
-          cp -r spring/.ebextensions_release deploy/.ebextensions 2>/dev/null || echo "No .ebextensions_release found, skipping."
+          
+          # nginx 라우팅 스크립트 생성
+          cat <<EOF > deploy/.platform/hooks/predeploy/01_nginx_proxy.sh
+          #!/bin/bash
+          cat <<NGINX > /etc/nginx/conf.d/00_app.conf
+          server {
+           listen 80;
+           location / {
+               proxy_pass http://localhost:8080;
+           }
+           location /ai/ {
+               rewrite ^/ai(/.*)$ \$1 break;
+               proxy_pass http://localhost:5000;
+           }
+          }
+          NGINX
+          EOF
+          
+          chmod +x deploy/.platform/hooks/predeploy/01_nginx_proxy.sh
+          
           cd deploy && zip -r deploy.zip .
 
-      - name: Beanstalk Deploy
-        uses: einaregilsson/beanstalk-deploy@v20
-        with:
-          aws_access_key: ${{ secrets.AWS_ACTION_ACCESS_KEY_ID }}
-          aws_secret_key: ${{ secrets.AWS_ACTION_SECRET_ACCESS_KEY }}
-          application_name: escort-docker-dev
-          environment_name: Escort-docker-dev-env
-          version_label: github-action-${{ steps.current-time.outputs.formattedTime }}
-          region: ap-northeast-2
-          deployment_package: deploy/deploy.zip
-          wait_for_deployment: false
+          - name: Beanstalk Deploy
+            uses: einaregilsson/beanstalk-deploy@v20
+            with:
+              aws_access_key: ${{ secrets.AWS_ACTION_ACCESS_KEY_ID }}
+              aws_secret_key: ${{ secrets.AWS_ACTION_SECRET_ACCESS_KEY }}
+              application_name: escort-docker-dev
+              environment_name: Escort-docker-dev-env
+              version_label: github-action-${{ steps.current-time.outputs.formattedTime }}
+              region: ap-northeast-2
+              deployment_package: deploy/deploy.zip
+              wait_for_deployment: false
