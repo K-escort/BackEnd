@@ -106,13 +106,11 @@ jobs:
               ports:
                 - "8080:8080"
               environment:
-                - AWS_ACTION_ACCESS_KEY_ID=${AWS_ACTION_ACCESS_KEY_ID}
-                - AWS_ACTION_SECRET_ACCESS_KEY=${AWS_ACTION_SECRET_ACCESS_KEY}
-                - AWS_DB_URL=${AWS_DB_URL}
-                - AWS_DB_PASSWORD=${AWS_DB_PASSWORD}
-                - AWS_DB_USERNAME=${AWS_DB_USERNAME}
-                - AWS_REDIS_URL=${AWS_REDIS_URL}
-                - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+                - spring.datasource.url=${AWS_DB_URL}
+                - spring.datasource.password=${AWS_DB_PASSWORD}
+                - spring.datasource.username=${AWS_DB_USERNAME}
+                - spring.redis.url=${AWS_REDIS_URL}
+                - jwt.secret=${JWT_SECRET_KEY}
             ai:
               image: $ECR_REGISTRY/$ECR_REPOSITORY:ai-$IMAGE_TAG
               ports:
