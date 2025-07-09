@@ -117,6 +117,18 @@ jobs:
               image: $ECR_REGISTRY/$ECR_REPOSITORY:ai-$IMAGE_TAG
               ports:
                 - "5000:5000"
+              environment:
+                - OPENAI_API_KEY=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
+                - PINECONE_API_KEY=pcsk_3ZN88P_GmLGuVQyfv6QHfobPSc9NJTcAwRNhx59yXu9aZz9tYDBXSy3pT482myatcxw7BN
+                - UPSTAGE_API_KEY=up_iXmLUZVXOPneSFwb81orzRnezRzxy
+                - JEMINAI_API_KEY=AIzaSyALZLqnNQxhJvmWAfzi9WiarHnlRSA-SwM
+                - GOOGLE_API_KEY=AIzaSyDgnQWFSjdjYyj9iKMFwtQ4D5-JRvQkFvc
+                - DB_USER=root
+                - DB_PASSWORD=1111
+                - DB_HOST=localhost
+                - DB_PORT=3306
+                - DB_NAME=remember
+                - DB_URL=mysql+aiomysql://root:1111@localhost:3306/remember
           EOF
           
           # nginx 라우팅 스크립트 생성
