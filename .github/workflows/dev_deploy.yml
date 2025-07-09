@@ -109,8 +109,10 @@ jobs:
                 - spring.datasource.url=jdbc:mysql://escort-dev-db.c12eow6800ce.ap-northeast-2.rds.amazonaws.com:3306/escort_dev_db
                 - spring.datasource.password=escort1234!
                 - spring.datasource.username=root
-                - spring.redis.url=escort-cache-server-ro.tkfr7i.ng.0001.apn2.cache.amazonaws.com
                 - jwt.secret=84XcHP2NTcgHyoe0q2/GLTtjD94Qq49DWEQVqOrSGGlfpq/8j5werddHMUHTQgOnj4Dy+wb5LYcGkk722F557A==
+                - spring.data.redis.host=escort-cache-server-ro.tkfr7i.ng.0001.apn2.cache.amazonaws.com
+                - spring.data.redis.port=6379
+                - spring.data.redis.password=1234
             ai:
               image: $ECR_REGISTRY/$ECR_REPOSITORY:ai-$IMAGE_TAG
               ports:
