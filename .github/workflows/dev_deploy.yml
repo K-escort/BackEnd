@@ -101,14 +101,14 @@ jobs:
           cat <<EOF > deploy/docker-compose.yml
           version: "3"
           services:
-          spring:
-           image: $ECR_REGISTRY/$ECR_REPOSITORY:spring-$IMAGE_TAG
-           ports:
-             - "8080:8080"
-          ai:
-           image: $ECR_REGISTRY/$ECR_REPOSITORY:ai-$IMAGE_TAG
-           ports:
-             - "5000:5000"
+            spring:
+              image: $ECR_REGISTRY/$ECR_REPOSITORY:spring-$IMAGE_TAG
+              ports:
+                - "8080:8080"
+            ai:
+              image: $ECR_REGISTRY/$ECR_REPOSITORY:ai-$IMAGE_TAG
+              ports:
+                - "5000:5000"
           EOF
           
           # nginx 라우팅 스크립트 생성
