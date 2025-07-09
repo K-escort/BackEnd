@@ -17,7 +17,6 @@ jobs:
         with:
           path: spring
 
-
       - name: Checkout AI repo
         uses: actions/checkout@v2
         with:
@@ -91,12 +90,44 @@ jobs:
         shell: bash
 
       - name: Generate deployment package
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: escort-dev
+          IMAGE_TAG: latest
         run: |
           mkdir -p deploy
-          cp spring/build/libs/*.jar deploy/application.jar
-          cp spring/Procfile deploy/Procfile
-          cp -r spring/.ebextensions_release deploy/.ebextensions
-          cp -r spring/.platform deploy/.platform
+          cat <<EOF > deploy/Dockerrun.aws.json
+          {
+            "AWSEBDockerrunVersion": 2,
+            "containerDefinitions": [
+              {
+                "name": "spring-app",
+                "image": "$ECR_REGISTRY/$ECR_REPOSITORY:spring-$IMAGE_TAG",
+                "essential": true,
+                "memory": 512,
+                "portMappings": [
+                  {
+                    "hostPort": 8080,
+                    "containerPort": 8080
+                  }
+                ]
+              },
+              {
+                "name": "ai-app",
+                "image": "$ECR_REGISTRY/$ECR_REPOSITORY:ai-$IMAGE_TAG",
+                "essential": true,
+                "memory": 512,
+                "portMappings": [
+                  {
+                    "hostPort": 5000,
+                    "containerPort": 5000
+                  }
+                ]
+              }
+            ]
+          }
+          EOF
+          cp -r spring/.ebextensions_release deploy/.ebextensions 2>/dev/null || echo "No .ebextensions_release found, skipping."
           cd deploy && zip -r deploy.zip .
 
       - name: Beanstalk Deploy
