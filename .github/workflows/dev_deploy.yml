@@ -98,7 +98,7 @@ jobs:
           mkdir -p deploy
           cat <<EOF > deploy/Dockerrun.aws.json
           {
-            "AWSEBDockerrunVersion": 2,
+            "AWSEBDockerrunVersion": 3,
             "containerDefinitions": [
               {
                 "name": "spring-app",
