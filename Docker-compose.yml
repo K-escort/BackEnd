@@ -1,0 +1,10 @@
+version: '3'
+services:
+  spring-app:
+    image: 536697232498.dkr.ecr.ap-northeast-2.amazonaws.com/escort-dev:spring-latest
+    ports:
+      - "8080:8080"
+  ai-app:
+    image: 536697232498.dkr.ecr.ap-northeast-2.amazonaws.com/escort-dev:ai-latest
+    ports:
+      - "5000:5000"
