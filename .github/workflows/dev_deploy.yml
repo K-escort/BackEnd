@@ -128,22 +128,49 @@ jobs:
                 - DB_PORT=3306
                 - DB_NAME=remember
                 - DB_URL=mysql+aiomysql://root:1111@localhost:3306/remember
+            nginx:
+              image: nginx:latest
+              ports:
+                - "80:80"
+              volumes:
+                - ./nginx.conf:/etc/nginx/nginx.conf
+              depends_on:
+                - spring
+                - ai
           EOF
           
           mkdir -p deploy/.platform/nginx/conf.d
-          cat <<EOF > deploy/.platform/nginx/conf.d/00_app.conf
-          server {
-            listen 80;
-            
-            location / {
-              proxy_pass http://localhost:8080;
+          cat <<EOF > deploy/.platform/nginx.conf
+          events {}
+  
+          http {
+            upstream spring {
+              server spring:8080;
             }
-            
-            location /ai/ {
-              rewrite ^/ai(/.*)$ \$1 break;
-              proxy_pass http://localhost:5000;
+        
+            upstream ai {
+              server ai:5000;
+            }
+        
+            server {
+              listen 80;
+          
+              location / {
+                proxy_pass http://spring;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+              }
+          
+              location /ai/ {
+                rewrite ^/ai(/.*)$ $1 break;
+                proxy_pass http://ai;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+              }
             }
           }
+  
+
           EOF
           cd deploy && zip -r deploy.zip .
 
