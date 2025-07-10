@@ -144,7 +144,8 @@ jobs:
             }
           }
           EOF
-          
+          mkdir -p deploy
+          cp docker-compose.yml deploy/          
           cd deploy && zip -r deploy.zip .
 
       - name: Beanstalk Deploy
