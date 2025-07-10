@@ -95,8 +95,6 @@ jobs:
           ECR_REPOSITORY: escort-dev
           IMAGE_TAG: latest
         run: |
-          mkdir -p deploy/.platform/hooks/predeploy
-          
           # docker-compose.yml 생성
           cat <<EOF > deploy/docker-compose.yml
           version: "3"
@@ -131,24 +129,21 @@ jobs:
                 - DB_URL=mysql+aiomysql://root:1111@localhost:3306/remember
           EOF
           
-          # nginx 라우팅 스크립트 생성
-          cat <<EOF > deploy/.platform/hooks/predeploy/01_nginx_proxy.sh
-          #!/bin/bash
-          cat <<NGINX > /etc/nginx/conf.d/00_app.conf
+          mkdir -p deploy/.platform/nginx/conf.d
+          cat <<EOF > deploy/.platform/nginx/conf.d/00_app.conf
           server {
-           listen 80;
-           location / {
-               proxy_pass http://localhost:8080;
-           }
-           location /ai/ {
-               rewrite ^/ai(/.*)$ \$1 break;
-               proxy_pass http://localhost:5000;
-           }
+            listen 80;
+            
+            location / {
+              proxy_pass http://localhost:8080;
+            }
+            
+            location /ai/ {
+              rewrite ^/ai(/.*)$ \$1 break;
+              proxy_pass http://localhost:5000;
+            }
           }
-          NGINX
           EOF
-          
-          chmod +x deploy/.platform/hooks/predeploy/01_nginx_proxy.sh
           
           cd deploy && zip -r deploy.zip .
 
