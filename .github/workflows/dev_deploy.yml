@@ -139,8 +139,8 @@ jobs:
                 - ai
           EOF
           
-          mkdir -p deploy/.platform/nginx/conf.d
-          cat <<EOF > deploy/.platform/nginx.conf
+          mkdir -p deploy/.platform
+          cat <<EOF > deploy/nginx.conf
           events {}
   
           http {
