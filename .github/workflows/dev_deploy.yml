@@ -95,6 +95,7 @@ jobs:
           ECR_REPOSITORY: escort-dev
           IMAGE_TAG: latest
         run: |
+          mkdir -p deploy
           # docker-compose.yml 생성
           cat <<EOF > deploy/docker-compose.yml
           version: "3"
@@ -144,7 +145,6 @@ jobs:
             }
           }
           EOF
-          mkdir -p deploy
           cp docker-compose.yml deploy/          
           cd deploy && zip -r deploy.zip .
 
