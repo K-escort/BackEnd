@@ -92,7 +92,7 @@ public class SecurityConfig {
                 "https://api.refrigerator.asia",
                 "https://api.refrigerator.asia",
                 "https://*.api.refrigerator.asia",
-                "Escort-docker-dev-env.eba-4tezjwrt.ap-northeast-2.elasticbeanstalk.com"
+                "http://escort-docker-dev-env.eba-4tezjwrt.ap-northeast-2.elasticbeanstalk.com/"
         ));
         configuration.setAllowCredentials(true); // 자격 증명 허용 (쿠키, 인증 정보 포함)
         configuration.addAllowedMethod("*");
