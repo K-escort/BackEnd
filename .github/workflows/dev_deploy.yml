@@ -156,11 +156,11 @@ jobs:
               listen 80;
           
               location / {
-                proxy_pass http://spring;
+                proxy_pass http://localhost:8080;
               }
           
               location /ai/ {
-                proxy_pass http://ai;
+                proxy_pass http://localhost:5000;
               }
             }
           }
