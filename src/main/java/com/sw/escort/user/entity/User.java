@@ -44,23 +44,23 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RelationshipRequest> receivedRequests = new ArrayList<>();
 
-//    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JoinColumn(name = "profile_image_id")
-//    private ProfileImage profileImage;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "profile_image_id")
+    private ProfileImage profileImage;
 
-//    // 헬퍼 메서드: ProfileImage 설정
-//    public void setProfileImage(ProfileImage profileImage) {
-//        this.profileImage = profileImage;
-//        if (profileImage != null) {
-//            profileImage.setUser(this); // 양방향 관계 설정
-//        }
-//    }
-//
-//    // 헬퍼 메서드: ProfileImage 제거
-//    public void clearProfileImage() {
-//        if (this.profileImage != null) {
-//            this.profileImage.setUser(null); // 양방향 관계 해제
-//            this.profileImage = null;
-//        }
-//    }
+    // 헬퍼 메서드: ProfileImage 설정
+    public void setProfileImage(ProfileImage profileImage) {
+        this.profileImage = profileImage;
+        if (profileImage != null) {
+            profileImage.setUser(this); // 양방향 관계 설정
+        }
+    }
+
+    // 헬퍼 메서드: ProfileImage 제거
+    public void clearProfileImage() {
+        if (this.profileImage != null) {
+            this.profileImage.setUser(null); // 양방향 관계 해제
+            this.profileImage = null;
+        }
+    }
 }
