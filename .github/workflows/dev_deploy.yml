@@ -145,22 +145,22 @@ jobs:
   
           http {
             upstream spring {
-              server spring;
+              server spring:8080;
             }
         
             upstream ai {
-              server ai;
+              server ai:5000;
             }
         
             server {
               listen 80;
           
               location / {
-                proxy_pass http://spring:8080;
+                proxy_pass http://spring;
               }
           
               location /ai/ {
-                proxy_pass http://ai:5000;
+                proxy_pass http://ai;
               }
             }
           }
