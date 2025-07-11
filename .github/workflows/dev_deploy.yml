@@ -121,6 +121,8 @@ jobs:
                 - spring.data.redis.host=escort-cache-server-ro.tkfr7i.ng.0001.apn2.cache.amazonaws.com
                 - spring.data.redis.port=6379
                 - spring.data.redis.password=1234
+                - kakao.client_id=1c813139a8cbd18cc0471cbe405de8ce
+                - kakao.redirect_uri=https://api.refrigerator.asia/callback
               
             ai:
               image: $ECR_REGISTRY/$ECR_REPOSITORY:ai-$IMAGE_TAG
