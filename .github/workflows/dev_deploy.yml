@@ -125,7 +125,7 @@ jobs:
             ai:
               image: $ECR_REGISTRY/$ECR_REPOSITORY:ai-$IMAGE_TAG
               ports:
-                - "5000:5000"
+                - "4379:4379"
               environment:
                 - OPENAI_API_KEY=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
                 - PINECONE_API_KEY=pcsk_3ZN88P_GmLGuVQyfv6QHfobPSc9NJTcAwRNhx59yXu9aZz9tYDBXSy3pT482myatcxw7BN
@@ -150,7 +150,7 @@ jobs:
             }
           
             upstream ai {
-              server ai:5000;
+              server ai:4379;
             }
           
             server {
