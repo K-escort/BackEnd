@@ -96,43 +96,6 @@ jobs:
           IMAGE_TAG: latest
         run: |
           
-          mkdir -p deploy/.platform/nginx
-          cat <<EOF > deploy/.platform/nginx/nginx.conf
-          events {}
-          
-          http {
-            upstream spring {
-              server spring:8080;
-            }
-          
-            upstream ai {
-              server ai:5000;
-            }
-          
-            server {
-              listen 80;
-          
-              location / {
-                proxy_pass http://spring:8080;
-                proxy_connect_timeout 60s;
-                proxy_read_timeout 60s;
-              }
-          
-              location /ai/ {
-                proxy_pass http://ai:5000;
-              }
-          
-              location /health{
-                proxy_pass http://spring/health;
-                proxy_connect_timeout 60s;
-                proxy_read_timeout 60s;
-              }
-            }
-          }
-          
-          
-          EOF
-          
           mkdir -p deploy
           # docker-compose.yml 생성
           cat <<EOF > deploy/docker-compose.yml
@@ -181,7 +144,40 @@ jobs:
                 - DB_URL=mysql+aiomysql://root:1111@localhost:3306/remember
           EOF
           
+          mkdir -p deploy/.platform/nginx
+          cat <<EOF > deploy/.platform/nginx/nginx.conf
+          events {}
           
+          http {
+            upstream spring {
+              server spring:8080;
+            }
+          
+            upstream ai {
+              server ai:5000;
+            }
+          
+            server {
+              listen 80;
+          
+              location / {
+                proxy_pass spring;
+                proxy_connect_timeout 60s;
+                proxy_read_timeout 60s;
+              }
+          
+              location /ai/ {
+                proxy_pass ai;
+              }
+          
+              location /health{
+                proxy_pass spring/health;
+                proxy_connect_timeout 60s;
+                proxy_read_timeout 60s;
+              }
+            }
+          }
+          EOF
           cd deploy && zip -r deploy.zip .
 
       - name: Beanstalk Deploy
