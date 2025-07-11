@@ -107,8 +107,7 @@ jobs:
                 volumes:
                   - ./nginx.conf:/etc/nginx/nginx.conf
                 depends_on:
-                  - spring:
-                    condition: service_healthy
+                  - spring
                   - ai
             spring:
               image: $ECR_REGISTRY/$ECR_REPOSITORY:spring-$IMAGE_TAG
@@ -169,6 +168,10 @@ jobs:
           
               location /ai/ {
                 proxy_pass http://ai;
+              }
+              
+              location /health{
+                proxy_pass http://spring/health;
               }
             }
           }
