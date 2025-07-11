@@ -124,6 +124,8 @@ jobs:
           
               location /health{
                 proxy_pass http://spring/health;
+                proxy_connect_timeout 60s;
+                proxy_read_timeout 60s;
               }
             }
           }
