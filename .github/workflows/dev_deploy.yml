@@ -145,11 +145,11 @@ jobs:
   
           http {
             upstream spring {
-              server spring:8080;
+              server spring;
             }
         
             upstream ai {
-              server ai:5000;
+              server ai;
             }
         
             server {
