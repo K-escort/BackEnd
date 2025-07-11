@@ -104,7 +104,7 @@ jobs:
                 ports:
                   - "80:80"
                 volumes:
-                  - ./nginx.conf:/etc/nginx/nginx.conf
+                  - ./.platform/nginx/nginx.conf:/etc/nginx/nginx.conf 
                 depends_on:
                   - spring
                   - ai
