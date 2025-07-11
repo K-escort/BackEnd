@@ -98,7 +98,6 @@ jobs:
           mkdir -p deploy
           # docker-compose.yml 생성
           cat <<EOF > deploy/docker-compose.yml
-          version: "3"
           services:
             nginx:
                 image: nginx:latest
@@ -145,7 +144,7 @@ jobs:
           EOF
           
           mkdir -p deploy/.platform
-          cat <<EOF > deploy/nginx.conf
+          cat <<EOF > deploy/.platform/nginx/nginx.conf
           events {}
   
           http {
