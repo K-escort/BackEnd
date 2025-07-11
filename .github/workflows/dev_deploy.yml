@@ -121,11 +121,7 @@ jobs:
                 - spring.data.redis.host=escort-cache-server-ro.tkfr7i.ng.0001.apn2.cache.amazonaws.com
                 - spring.data.redis.port=6379
                 - spring.data.redis.password=1234
-              healthcheck:
-                test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
-                interval: 10s
-                timeout: 5s
-                retries: 5
+              
             ai:
               image: $ECR_REGISTRY/$ECR_REPOSITORY:ai-$IMAGE_TAG
               ports:
