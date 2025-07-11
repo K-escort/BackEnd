@@ -143,7 +143,7 @@ jobs:
                 - DB_URL=mysql+aiomysql://root:1111@localhost:3306/remember
           EOF
           
-          mkdir -p deploy/.platform
+          mkdir -p deploy/.platform/nginx
           cat <<EOF > deploy/.platform/nginx/nginx.conf
           events {}
   
