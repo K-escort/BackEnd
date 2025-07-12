@@ -41,7 +41,7 @@ public class PythonAiClient {
         payload.put("user_info", userInfoMap);
 
         return webClient.post() //HTTP POST 요청 시작
-                .uri("/chat")// Python 서버의 상태 URI 설정
+                .uri("/ai/chat")// Python 서버의 상태 URI 설정
                 .bodyValue(payload)// 요청 본문(body)에 payload(Map<String, object>) 설정
                 .retrieve() //응답을 가져오겠다는 의미(send요청)
                 .bodyToMono(ChatResponse.class)
