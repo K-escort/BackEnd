@@ -17,7 +17,7 @@ import java.util.Map;
 public class PythonAiClient {
 
     private final WebClient webClient = WebClient.builder()
-            .baseUrl("http://ai:5000")//http://localhost:5000
+            .baseUrl("ai:5000")//http://localhost:5000
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .build();
 
