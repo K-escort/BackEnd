@@ -113,7 +113,7 @@ jobs:
               ports:
                 - "8080:8080"
               environment:
-                - spring.datasource.url=jdbc:mysql://escort-dev-db.c12eow6800ce.ap-northeast-2.rds.amazonaws.com:3306/escort_dev_db
+                - spring.datasource.url=jdbc:mysql://database-escort-private.c12eow6800ce.ap-northeast-2.rds.amazonaws.com:3306/escort_dev_db
                 - spring.datasource.password=escort1234!
                 - spring.datasource.username=root
                 - jwt.secret=84XcHP2NTcgHyoe0q2/GLTtjD94Qq49DWEQVqOrSGGlfpq/8j5werddHMUHTQgOnj4Dy+wb5LYcGkk722F557A==
