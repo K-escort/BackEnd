@@ -95,7 +95,7 @@ jobs:
           ECR_REPOSITORY: escort-dev
           IMAGE_TAG: latest
         run: |
-          
+          docker-compose down
           mkdir -p deploy
           # docker-compose.yml 생성
           cat <<EOF > deploy/docker-compose.yml
