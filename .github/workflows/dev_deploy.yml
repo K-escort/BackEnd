@@ -89,13 +89,12 @@ jobs:
         run: echo "CurrentTime=${{ steps.current-time.outputs.formattedTime }}"
         shell: bash
 
-      - name: Generate deployment package for AL2023
+      - name: Generate deployment package
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: escort-dev
           IMAGE_TAG: latest
         run: |
-          docker-compose down
           mkdir -p deploy
           # docker-compose.yml 생성
           cat <<EOF > deploy/docker-compose.yml
@@ -170,6 +169,17 @@ jobs:
             }
           }
           EOF
+          
+          mkdir -p deploy/.platform/hooks/predeploy
+
+          cat <<EOF > deploy/.platform/hooks/predeploy/01_cleanup.sh
+          #!/bin/bash
+          echo "[PREDEPLOY] Stopping existing containers..."
+          docker-compose down || true
+          EOF
+
+          chmod +x deploy/.platform/hooks/predeploy/01_cleanup.sh
+
           cd deploy && zip -r deploy.zip .
 
       - name: Beanstalk Deploy
