@@ -179,7 +179,7 @@ jobs:
 
           chmod +x deploy/.platform/hooks/predeploy/01_cleanup.sh
           mkdir -p deploy/.ebextensions
-          cp -r .ebextensions_release deploy/.ebextensions
+          cp -r spring/.ebextensions_release deploy/.ebextensions
           cd deploy && zip -r deploy.zip .
 
       - name: Beanstalk Deploy
