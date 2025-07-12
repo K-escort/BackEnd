@@ -1,5 +1,7 @@
 package com.sw.escort.user.dto.req;
 
+import com.sw.escort.user.entity.enums.CognitiveStatus;
+import com.sw.escort.user.entity.enums.Gender;
 import com.sw.escort.user.entity.enums.Role;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -27,5 +29,20 @@ public class UserDtoReq {
         private Integer birthYear;
         @NotNull(message = "역할은 필수입니다.")
         private Role role;
+    }
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UserInfoUpdateReq {
+        private Integer age;
+        private Gender gender;
+        private CognitiveStatus cognitiveStatus;
+        private String hometown;
+        private String lifeHistory;
+        private String familyInfo;
+        private String education;
+        private String occupation;
+        private String forbiddenKeywords;
+        private String lifetimeline;
     }
 }

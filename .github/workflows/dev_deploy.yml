@@ -14,12 +14,16 @@ jobs:
     steps:
       - name: Checkout Spring repo
         uses: actions/checkout@v2
+        with:
+          path: spring
 
-#      - name: Checkout AI repo
-#        uses: actions/checkout@v2
-#        with:
-#          repository: K-escort/python
-#          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Checkout AI repo
+        uses: actions/checkout@v2
+        with:
+          repository: K-escort/Python
+          token: ${{ secrets.ACCESS_REPO_TOKEN }}
+          path: ai
+          ref: main
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -27,34 +31,51 @@ jobs:
           java-version: 17
           distribution: 'adopt'
 
-#      - name: Configure AWS credentials
-#        uses: aws-actions/configure-aws-credentials@v1
-#        with:
-#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#          aws-region: ap-northeast-2
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACTION_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_ACTION_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x spring/gradlew
+        shell: bash
+
+      - name: Build with Gradle
+        run: cd spring && ./gradlew clean build -x test
+        shell: bash
+
+      - name: Check JAR file existence
+        run: ls -la spring/build/libs
+        shell: bash
 
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
+      - name: Build, tag, and push Spring image to Amazon ECR
+        id: build-spring-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: escort-dev
           IMAGE_TAG: latest
         run: |
-          docker buildx build --platform=linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
+          docker buildx build --platform=linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:spring-$IMAGE_TAG -f spring/Dockerfile spring
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:spring-$IMAGE_TAG
+          echo "::set-output name=spring-image::$ECR_REGISTRY/$ECR_REPOSITORY:spring-$IMAGE_TAG"
         shell: bash
 
-      - name: Build with Gradle
-        run: ./gradlew clean build -x test
+      - name: Build, tag, and push AI image to Amazon ECR
+        id: build-ai-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: escort-dev
+          IMAGE_TAG: latest
+        run: |
+          docker buildx build --platform=linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:ai-$IMAGE_TAG -f ai/Dockerfile ai
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:ai-$IMAGE_TAG
+          echo "::set-output name=ai-image::$ECR_REGISTRY/$ECR_REPOSITORY:ai-$IMAGE_TAG"
         shell: bash
 
       - name: Get current time
@@ -69,12 +90,95 @@ jobs:
         shell: bash
 
       - name: Generate deployment package
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: escort-dev
+          IMAGE_TAG: latest
         run: |
           mkdir -p deploy
-          cp build/libs/*.jar deploy/application.jar
-          cp Procfile deploy/Procfile
-          cp -r .ebextensions_release deploy/.ebextensions
-          cp -r .platform deploy/.platform
+          # docker-compose.yml 생성
+          cat <<EOF > deploy/docker-compose.yml
+          services:
+            nginx:
+                image: nginx:latest
+                ports:
+                  - "80:80"
+                volumes:
+                  - ./.platform/nginx/nginx.conf:/etc/nginx/nginx.conf 
+                depends_on:
+                  - spring
+                  - ai
+            spring:
+              image: $ECR_REGISTRY/$ECR_REPOSITORY:spring-$IMAGE_TAG
+              ports:
+                - "8080:8080"
+              environment:
+                - spring.datasource.url=jdbc:mysql://escort-dev-db.c12eow6800ce.ap-northeast-2.rds.amazonaws.com:3306/escort_dev_db
+                - spring.datasource.password=escort1234!
+                - spring.datasource.username=root
+                - jwt.secret=84XcHP2NTcgHyoe0q2/GLTtjD94Qq49DWEQVqOrSGGlfpq/8j5werddHMUHTQgOnj4Dy+wb5LYcGkk722F557A==
+                - spring.data.redis.host=escort-cache.tkfr7i.ng.0001.apn2.cache.amazonaws.com
+                - spring.data.redis.port=6379
+                - kakao.client_id=1c813139a8cbd18cc0471cbe405de8ce
+                - kakao.redirect_uri=https://api.refrigerator.asia/callback
+              
+            ai:
+              image: $ECR_REGISTRY/$ECR_REPOSITORY:ai-$IMAGE_TAG
+              ports:
+                - "5000:5000"
+              environment:
+                - OPENAI_API_KEY=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
+                - PINECONE_API_KEY=pcsk_3ZN88P_GmLGuVQyfv6QHfobPSc9NJTcAwRNhx59yXu9aZz9tYDBXSy3pT482myatcxw7BN
+                - UPSTAGE_API_KEY=up_iXmLUZVXOPneSFwb81orzRnezRzxy
+                - JEMINAI_API_KEY=AIzaSyALZLqnNQxhJvmWAfzi9WiarHnlRSA-SwM
+                - GOOGLE_API_KEY=AIzaSyDgnQWFSjdjYyj9iKMFwtQ4D5-JRvQkFvc
+                - DB_USER=root
+                - DB_PASSWORD=1111
+                - DB_HOST=localhost
+                - DB_PORT=3306
+                - DB_NAME=remember
+                - DB_URL=mysql+aiomysql://root:1111@localhost:3306/remember
+          EOF
+          
+          mkdir -p deploy/.platform/nginx
+          cat <<EOF > deploy/.platform/nginx/nginx.conf
+          events {}
+          
+          http {
+            upstream spring {
+              server spring:8080;
+            }
+          
+            upstream ai {
+              server ai:5000;
+            }
+          
+            server {
+              listen 80;
+          
+              location / {
+                proxy_pass http://spring;
+                proxy_connect_timeout 60s;
+                proxy_read_timeout 60s;
+              }
+          
+              location /ai/ {
+                proxy_pass http://ai;
+              }
+            }
+          }
+          EOF
+          
+          mkdir -p deploy/.platform/hooks/predeploy
+
+          cat <<EOF > deploy/.platform/hooks/predeploy/01_cleanup.sh
+          #!/bin/bash
+          echo "[PREDEPLOY] Stopping existing containers..."
+          docker-compose down || true
+          EOF
+
+          chmod +x deploy/.platform/hooks/predeploy/01_cleanup.sh
+
           cd deploy && zip -r deploy.zip .
 
       - name: Beanstalk Deploy
@@ -82,8 +186,8 @@ jobs:
         with:
           aws_access_key: ${{ secrets.AWS_ACTION_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_ACTION_SECRET_ACCESS_KEY }}
-          application_name: escort-docker-dev
-          environment_name: Escort-docker-dev-env
+          application_name: escort-dev
+          environment_name: Escort-dev-env
           version_label: github-action-${{ steps.current-time.outputs.formattedTime }}
           region: ap-northeast-2
           deployment_package: deploy/deploy.zip

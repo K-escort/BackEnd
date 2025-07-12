@@ -33,9 +33,9 @@ logging:
 jwt:
   secret: ${JWT_SECRET_KEY}
 
-#kakao:
-#  client_id: ${KAKAO_REST_API_KEY}
-#  redirect_uri: ${KAKAO_REDIRECT_URI}
+kakao:
+  client_id: ${KAKAO_REST_API_KEY}
+  redirect_uri: ${KAKAO_REDIRECT_URI}
 
 #cloud:
 #  aws:

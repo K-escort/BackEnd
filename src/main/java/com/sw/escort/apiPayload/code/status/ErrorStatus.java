@@ -29,7 +29,8 @@ public enum ErrorStatus implements BaseErrorCode {
 
     //User
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4004", "사용자를 찾을 수 없습니다."),
-    INVALID_NICKNAME(HttpStatus.BAD_REQUEST, "MEMBER4003", "닉네임을 2자 이상, 20자 이하로 작성해주세요"),
+    USER_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "USERINFO4004", "저장된 사용자 정보가 없습니다."),
+    UNAUTHORIZED(HttpStatus.FORBIDDEN, "USERINFO4001", "정보 수정 권한이 없습니다."),
 
     //Image
     FILE_TOO_LARGE(HttpStatus.BAD_REQUEST, "FILE4000", "이미지 용량은 5MB이하로 해주세요"),
@@ -40,8 +41,13 @@ public enum ErrorStatus implements BaseErrorCode {
     FILE_UPLOAD_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "FILE4005", "파일 업로드에 실패했습니다."),
 
     //paging
-    INVALID_PAGE_PARAMETER(HttpStatus.BAD_REQUEST, "PAGE400", "잘못된 페이지 값입니다. 1 이상의 정수로 입력해주세요.");
+    INVALID_PAGE_PARAMETER(HttpStatus.BAD_REQUEST, "PAGE400", "잘못된 페이지 값입니다. 1 이상의 정수로 입력해주세요."),
 
+    //관계
+    REQUEST_NOT_FOUND(HttpStatus.NOT_FOUND, "R001", "관계 요청을 찾을 수 없습니다."),
+    CANNOT_REQUEST_SELF(HttpStatus.BAD_REQUEST, "R003", "자기 자신에게 관계 요청을 보낼 수 없습니다."),
+    ALREADY_RELATED(HttpStatus.CONFLICT, "R002", "이미 관계가 존재합니다."),
+    CANNOT_SEARCH_SELF(HttpStatus.BAD_REQUEST, "U005", "자기 자신은 검색할 수 없습니다.");
 
 
     private final HttpStatus httpStatus;

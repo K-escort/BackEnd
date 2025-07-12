@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HealthController {
 
-    @Deprecated
     @GetMapping("/health")
     public String health() {
         return "ㅎㅇ";

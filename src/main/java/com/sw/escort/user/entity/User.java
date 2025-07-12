@@ -1,6 +1,8 @@
 package com.sw.escort.user.entity;
 
 import com.sw.escort.global.BaseEntity;
+import com.sw.escort.relationship.entity.Relationship;
+import com.sw.escort.relationship.entity.RelationshipRequest;
 import com.sw.escort.user.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,14 +10,12 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
 @Getter
 @Setter
-@Table(name = "user")
-@Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
-
+@Builder
+@Entity
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +30,19 @@ public class User extends BaseEntity {
     private Integer birthYear;
 
     @Enumerated(EnumType.STRING)
-    private Role role; //역할
+    private Role role; // 보호자 or 기억지기(환자)
+
+    @OneToMany(mappedBy = "fromUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Relationship> sentRelationships = new ArrayList<>();
+
+    @OneToMany(mappedBy = "toUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Relationship> receivedRelationships = new ArrayList<>();
+
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RelationshipRequest> sentRequests = new ArrayList<>();
+
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RelationshipRequest> receivedRequests = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "profile_image_id")

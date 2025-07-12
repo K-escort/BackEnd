@@ -12,7 +12,7 @@ spring:
   jpa:
     open-in-view: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
@@ -24,7 +24,6 @@ spring:
     redis:
       host: ${AWS_REDIS_URL}
       port: 6379
-      password: 1234
 
 logging:
   level:
@@ -34,14 +33,10 @@ logging:
 jwt:
   secret: ${JWT_SECRET_KEY}
 
-#kakao:
-#  client_id: ${KAKAO_ID}
-#  redirect_uri: ${KAKAO_REDIRECT_URI}
-#
-#naver:
-#  client_id: ${NAVER_CLIENT_ID}
-#  client_secret: ${NAVER_CLIENT_SECRET}
-#  redirect_uri: ${NAVER_REDIRECT_URI}
+kakao:
+  client_id: ${KAKAO_ID}
+  redirect_uri: ${KAKAO_REDIRECT_URI}
+
 
 #cloud:
 #  aws:
