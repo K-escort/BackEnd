@@ -10,5 +10,5 @@ spring:
   jackson:
     date-format: yyyy/MM/dd HH:mm
     time-zone: Asia/Seoul
-  profiles:
-    active: deploy
+  # profiles:
+  #   active: deploy
