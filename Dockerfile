@@ -6,4 +6,4 @@ COPY ${JAR_FILE} app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-Dspring.profiles.active=application-deploy", "-jar", "/app.jar"]
+ENTRYPOINT ["java", "-Dspring.profiles.active=deploy", "-jar", "/app.jar"]
