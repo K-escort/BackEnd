@@ -117,7 +117,7 @@ jobs:
                 - spring.datasource.password=escort1234!
                 - spring.datasource.username=root
                 - jwt.secret=84XcHP2NTcgHyoe0q2/GLTtjD94Qq49DWEQVqOrSGGlfpq/8j5werddHMUHTQgOnj4Dy+wb5LYcGkk722F557A==
-                - spring.data.redis.host=escort-cache-server.tkfr7i.ng.0001.apn2.cache.amazonaws.com
+                - spring.data.redis.host=escort-cache.tkfr7i.ng.0001.apn2.cache.amazonaws.com
                 - spring.data.redis.port=6379
                 - kakao.client_id=1c813139a8cbd18cc0471cbe405de8ce
                 - kakao.redirect_uri=https://api.refrigerator.asia/callback
