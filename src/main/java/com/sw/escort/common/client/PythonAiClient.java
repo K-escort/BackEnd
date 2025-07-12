@@ -23,7 +23,7 @@ public class PythonAiClient {
 
     public ChatResponse.ChatDetail sendChatToPython(User user, UserInfo info, String userPrompt) {
         Map<String, Object> payload = new HashMap<>();
-        payload.put("user_id", user.getId());
+        payload.put("user_id", String.valueOf(user.getId()));
         payload.put("user_prompt", userPrompt); //null 이면 대화 시작으로 인식
 
         Map<String, Object> userInfoMap = new HashMap<>();
