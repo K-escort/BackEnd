@@ -27,7 +27,7 @@ public class PythonAiClient {
         payload.put("user_prompt", userPrompt); //null 이면 대화 시작으로 인식
 
         Map<String, Object> userInfoMap = new HashMap<>();
-        userInfoMap.put("age", info.getAge());
+        userInfoMap.put("age", String.valueOf(info.getAge()));
         userInfoMap.put("gender", info.getGender()); // MALE, FEMALE
         userInfoMap.put("cognitiveStatus", info.getCognitiveStatus().name());
         userInfoMap.put("hometown", info.getHometown());
