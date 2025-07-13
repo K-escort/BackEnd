@@ -17,6 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -29,8 +30,20 @@ public class AmazonS3Util {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    @Value("${cloud.aws.s3.path.publicData}")
+    private String publicDataPath;
+
     // 최대 파일 용량: 10MB
     private final long MAX_FILE_SIZE = 10 * 1024 * 1024;
+
+    public Optional<String> getPublicDataImageUrlIfExists(String fileName) {
+        String key = publicDataPath + "/" + fileName;
+        if (!amazonS3.doesObjectExist(bucket, key)) {
+            return Optional.empty();
+        }
+        return Optional.of(amazonS3.getUrl(bucket, key).toString());
+    }
+
 
     public String uploadImage(MultipartFile file, String folder) {
         validateImage(file); // 용량, 타입 유효성 검사
