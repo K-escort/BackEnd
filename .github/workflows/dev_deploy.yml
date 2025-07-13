@@ -122,6 +122,9 @@ jobs:
                 - spring.data.redis.port=6379
                 - kakao.client_id=1c813139a8cbd18cc0471cbe405de8ce
                 - kakao.redirect_uri=https://api.refrigerator.asia/kakao/callback
+                - AWS_S3_ACCESS_KEY_ID=${{ secrets.AWS_S3_ACCESS_KEY_ID }}
+                - AWS_S3_SECRET_ACCESS_KEY=${{ secrets.AWS_S3_SECRET_ACCESS_KEY }}
+                - AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}
               
             ai:
               image: $ECR_REGISTRY/$ECR_REPOSITORY:ai-$IMAGE_TAG

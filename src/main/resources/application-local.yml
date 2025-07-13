@@ -37,20 +37,17 @@ kakao:
   client_id: ${KAKAO_REST_API_KEY}
   redirect_uri: ${KAKAO_REDIRECT_URI}
 
-#cloud:
-#  aws:
-#    s3:
-#      path:
-#        daily: daily
-#        todayMood: todayMood
-#        profile: profile
-#        test: test
-#        feedback: feedback
-#      bucket: ${AWS_S3_BUCKET}
-#    region:
-#      static: ap-northeast-2
-#    stack:
-#      auto: false
-#    credentials:
-#      accessKey: ${AWS_S3_ACCESS_KEY_ID}
-#      secretKey: ${AWS_S3_SECRET_ACCESS_KEY}
+cloud:
+  aws:
+    s3:
+      path:
+        userInfo: userInfo
+        publicData: publicData
+      bucket: ${AWS_S3_BUCKET}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    credentials:
+      accessKey: ${AWS_S3_ACCESS_KEY_ID}
+      secretKey: ${AWS_S3_SECRET_ACCESS_KEY}
