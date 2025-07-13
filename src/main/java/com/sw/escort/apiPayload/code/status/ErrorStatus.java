@@ -34,11 +34,10 @@ public enum ErrorStatus implements BaseErrorCode {
 
     //Image
     FILE_TOO_LARGE(HttpStatus.BAD_REQUEST, "FILE4000", "이미지 용량은 5MB이하로 해주세요"),
-    FILE_ONLY_THREE(HttpStatus.BAD_REQUEST, "FILE4002", "그림은 3개만 기록할 수 있습니다"),
-    INVALID_FILE_TYPE(HttpStatus.BAD_REQUEST,"FILE4000","이미지 파일만 업로드해주세요" ),
-    INVALID_IMAGE_URL(HttpStatus.NOT_FOUND,"FILE4004","이미지 URL을 찾을 수 없습니다"),
-    IMAGE_METADATA_FETCH_FAILED(HttpStatus.BAD_REQUEST, "FILE4001", "S3 이미지 메타데이터를 불러올 수 없습니다."),
-    FILE_UPLOAD_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "FILE4005", "파일 업로드에 실패했습니다."),
+    INVALID_FILE_TYPE(HttpStatus.BAD_REQUEST,"FILE4001","이미지 파일만 업로드해주세요" ),
+    INVALID_IMAGE_URL(HttpStatus.NOT_FOUND,"FILE4002","이미지 URL을 찾을 수 없습니다"),
+    FILE_UPLOAD_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "FILE4003", "파일 업로드에 실패했습니다."),
+    IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "FILE4004", "해당 이미지를 찾을 수 없습니다."),
 
     //paging
     INVALID_PAGE_PARAMETER(HttpStatus.BAD_REQUEST, "PAGE400", "잘못된 페이지 값입니다. 1 이상의 정수로 입력해주세요."),

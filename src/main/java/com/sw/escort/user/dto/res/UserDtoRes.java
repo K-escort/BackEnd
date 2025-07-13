@@ -36,6 +36,7 @@ public class UserDtoRes {
     @Builder
     @AllArgsConstructor
     public static class UserInfoRes {
+        private Long userInfoId;
         private Integer age;
         private Gender gender;
         private CognitiveStatus cognitiveStatus;
@@ -50,6 +51,7 @@ public class UserDtoRes {
 
         public static UserInfoRes from(UserInfo info) {
             return UserInfoRes.builder()
+                    .userInfoId(info.getId())
                     .age(info.getAge())
                     .gender(info.getGender())
                     .cognitiveStatus(info.getCognitiveStatus())
