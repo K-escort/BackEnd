@@ -6,10 +6,14 @@ import com.sw.escort.user.entity.UserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -49,5 +53,21 @@ public class PythonAiClient {
                 .block() //요청을 **동기 처리** (응답이 올 때까지 대기)
                 .getResponse(); // 내부 message, evaluation, topic 등만 반환
     }
+
+    public byte[] generateVideo(String prompt, MultipartFile inputImage) {
+        // 멀티파트 데이터 생성
+        MultipartBodyBuilder builder = new MultipartBodyBuilder();
+        builder.part("prompt", prompt);
+        builder.part("input_image", inputImage.getResource());
+
+        return webClient.post()
+                .uri("/ai/generate-video")
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(BodyInserters.fromMultipartData(builder.build()))
+                .retrieve()
+                .bodyToMono(byte[].class)
+                .block();
+    }
+
 }
 

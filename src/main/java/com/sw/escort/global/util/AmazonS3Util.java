@@ -5,10 +5,17 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.sw.escort.apiPayload.code.exception.GeneralException;
 import com.sw.escort.apiPayload.code.status.ErrorStatus;
+import com.sw.escort.daily.entity.Daily;
+import com.sw.escort.daily.entity.DailyImage;
+import com.sw.escort.daily.entity.DailyVideo;
+import com.sw.escort.daily.repository.DailyImageRepository;
+import com.sw.escort.daily.repository.DailyRepository;
+import com.sw.escort.daily.repository.DailyVideoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -17,6 +24,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,13 +33,23 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AmazonS3Util {
 
+    private final AmazonS3 amazonS3Client;
     private final AmazonS3 amazonS3;
+    private final DailyImageRepository dailyImageRepository;
+    private final DailyVideoRepository dailyVideoRepository;
+    private final DailyRepository dailyRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
     @Value("${cloud.aws.s3.path.publicData}")
     private String publicDataPath;
+
+    @Value("${cloud.aws.s3.path.dailyImage}")
+    private String dailyImagePath;
+
+    @Value("${cloud.aws.s3.path.dailyVideo}")
+    private String dailyVideoPath;
 
     // 최대 파일 용량: 10MB
     private final long MAX_FILE_SIZE = 10 * 1024 * 1024;
@@ -64,6 +82,72 @@ public class AmazonS3Util {
 
         // 업로드된 S3 객체의 전체 URL 반환
         return amazonS3.getUrl(bucket, key).toString();
+    }
+
+    @Transactional
+    public void uploadDailyImages(List<MultipartFile> dailyImages, Daily daily) throws IOException {
+        for (MultipartFile multipartFile : dailyImages) {
+            String contentType = multipartFile.getContentType();
+            if (multipartFile.getSize() > MAX_FILE_SIZE) {
+                throw new GeneralException(ErrorStatus.FILE_TOO_LARGE);
+            }
+            if (contentType == null || !contentType.startsWith("image/")) {
+                throw new GeneralException(ErrorStatus.INVALID_FILE_TYPE);
+            }
+
+            String uuid = UUID.randomUUID().toString();
+            String key = dailyImagePath + "/" + uuid + "_" + multipartFile.getOriginalFilename();
+
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(multipartFile.getSize());
+            metadata.setContentType(contentType);
+            amazonS3Client.putObject(bucket, key, multipartFile.getInputStream(), metadata);
+
+            DailyImage newdailyImage = DailyImage.builder()
+                    .uuid(uuid)
+                    .originalFilename(multipartFile.getOriginalFilename())
+                    .contentType(contentType)
+                    .fileSize(multipartFile.getSize())
+                    .daily(daily)
+                    .build();
+
+            dailyImageRepository.save(newdailyImage);
+        }
+
+        dailyImageRepository.flush();
+    }
+
+    @Transactional
+    public void uploadDailyVideos(List<MultipartFile> dailyVideos, Daily daily) throws IOException {
+        for (MultipartFile multipartFile : dailyVideos) {
+            String contentType = multipartFile.getContentType();
+            if (multipartFile.getSize() > MAX_FILE_SIZE) {
+                throw new GeneralException(ErrorStatus.FILE_TOO_LARGE);
+            }
+            if (contentType == null || !contentType.startsWith("video/")) {
+                throw new GeneralException(ErrorStatus.INVALID_VIDEO_FILE_TYPE);
+            }
+
+            String uuid = UUID.randomUUID().toString();
+            String key = dailyVideoPath + "/" + uuid + "_" + multipartFile.getOriginalFilename();
+
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(multipartFile.getSize());
+            metadata.setContentType(contentType);
+            amazonS3Client.putObject(bucket, key, multipartFile.getInputStream(), metadata);
+
+            DailyVideo newdailyVideo = DailyVideo.builder()
+                    .uuid(uuid)
+                    .originalFilename(multipartFile.getOriginalFilename())
+                    .contentType(contentType)
+                    .fileSize(multipartFile.getSize())
+                    .daily(daily)
+                    .build();
+
+            dailyVideoRepository.save(newdailyVideo);
+        }
+
+        dailyImageRepository.flush();
     }
 
     public void deleteFile(String fileUrlOrKey) {
