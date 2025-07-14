@@ -3,6 +3,7 @@ package com.sw.escort.daily.controller;
 import com.sw.escort.apiPayload.ApiResponse;
 import com.sw.escort.common.security.JwtTokenProvider;
 import com.sw.escort.daily.dto.req.DailyDtoReq;
+import com.sw.escort.daily.dto.res.DailyDtoRes;
 import com.sw.escort.daily.service.DailyService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -24,27 +25,19 @@ public class DailyController {
     private final DailyService dailyService;
     private final JwtTokenProvider jwtTokenProvider;
 
-//    @Operation(summary = "데일리 기록 세부 조회 API", description = "데일리 기록의 세부 사항을 조회합니다")
-//    @GetMapping("/get/daily")
-//    public ApiResponse<DailyDTORes.DailyModeRes> getdaily(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-//        Long userId = jwtTokenProvider.getUserIdFromToken();
-//        return ApiResponse.onSuccess(dailyService.getDaily(userId, date));
-//    }
-//
-//    @GetMapping("/get/weekly")
-//    @Operation(summary = "위클리 기록 조회 API", description = "데일리 주간 기록을 조회합니다")
-//    public ApiResponse<List<DailyDTORes.WeeklyRes>> getweekly(
-//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate date) {
-//        Long userId = jwtTokenProvider.getUserIdFromToken();
-//        return ApiResponse.onSuccess(dailyService.getWeekly(userId, date));
-//    }
-//
-//    @Operation(summary = "먼슬리 기록 조회 API", description = "데일리 월간 기록을 조회합니다")
-//    @GetMapping("/get/monthly")
-//    public ApiResponse<List<DailyDTORes.MonthlyRes>> getmonthly(@RequestParam @DateTimeFormat(pattern = "yyyy-MM") YearMonth date) {
-//        Long userId = jwtTokenProvider.getUserIdFromToken();
-//        return ApiResponse.onSuccess(dailyService.getMonthly(userId, date));
-//    }
+    @Operation(summary = "데일리 기록 세부 조회 API", description = "데일리 기록의 세부 사항을 조회합니다")
+    @GetMapping("/get/daily")
+    public ApiResponse<DailyDtoRes.DailyRes> getdaily(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        Long userId = jwtTokenProvider.getUserIdFromToken();
+        return ApiResponse.onSuccess(dailyService.getDaily(userId, date));
+    }
+
+    @Operation(summary = "먼슬리 기록 조회 API", description = "데일리 월간 기록을 조회합니다")
+    @GetMapping("/get/monthly")
+    public ApiResponse<List<DailyDtoRes.MonthlyRes>> getmonthly(@RequestParam @DateTimeFormat(pattern = "yyyy-MM") YearMonth date) {
+        Long userId = jwtTokenProvider.getUserIdFromToken();
+        return ApiResponse.onSuccess(dailyService.getMonthly(userId, date));
+    }
 
     @Operation(summary = "데일리 기록 저장 API", description = "사용자가 데일리 기록을 저장합니다.")
     @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

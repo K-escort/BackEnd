@@ -11,7 +11,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "daily_image")
+@Table(name = "daily_video")
 public class DailyVideo extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

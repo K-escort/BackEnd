@@ -4,6 +4,7 @@ import com.sw.escort.daily.dto.req.DailyDtoReq;
 import com.sw.escort.daily.entity.Daily;
 import com.sw.escort.global.util.AmazonS3Util;
 import com.sw.escort.user.entity.User;
+import com.sw.escort.user.entity.enums.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -24,11 +25,13 @@ public class DailyConverter {
 //    }
 
     public Daily toEntity(DailyDtoReq.RecordDailyReq dto, User user) {
+        String name = user.getRole().name();
+
         return Daily.builder()
                 .user(user)
                 .dailyDayRecording(dto.getDailyDayRecording())
                 .conversation(dto.getConversation())
-                .feedback(dto.getFeedback())
+                .feedback((name.equals("HEALER")) ? dto.getFeedback() : null)
                 .build();
     }
 
