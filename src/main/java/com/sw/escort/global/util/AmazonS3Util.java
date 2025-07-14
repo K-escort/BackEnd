@@ -27,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -115,6 +116,32 @@ public class AmazonS3Util {
         }
 
         dailyImageRepository.flush();
+    }
+
+    public List<String> getDailyImagePath(Long dailyId) {
+        Daily daily = dailyRepository.findById(dailyId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.DAILY_NOT_FOUND));
+
+        List<DailyImage> dailyImages = dailyImageRepository.findByDaily(daily);
+
+        return dailyImages.stream()
+                .filter(image -> image.getUuid() != null && image.getOriginalFilename() != null)
+                .map(image -> amazonS3.getUrl(bucket, dailyImagePath + "/" + image.getUuid() + "_" + image.getOriginalFilename()).toString())
+                .collect(Collectors.toList());
+
+    }
+
+    public List<String> getDailyVideoPath(Long dailyId) {
+        Daily daily = dailyRepository.findById(dailyId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.DAILY_NOT_FOUND));
+
+        List<DailyVideo> dailyVideos = dailyVideoRepository.findByDaily(daily);
+
+        return dailyVideos.stream()
+                .filter(image -> image.getUuid() != null && image.getOriginalFilename() != null)
+                .map(image -> amazonS3.getUrl(bucket, dailyVideoPath + "/" + image.getUuid() + "_" + image.getOriginalFilename()).toString())
+                .collect(Collectors.toList());
+
     }
 
     @Transactional
