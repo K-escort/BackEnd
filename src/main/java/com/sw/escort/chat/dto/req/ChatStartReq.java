@@ -7,5 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ChatStartReq {
     private String userPrompt;
+    private String topic;
 }
 
