@@ -18,4 +18,12 @@ public class DailyDtoReq {
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
         private LocalDate dailyDayRecording;
     }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DailyImageGenerationReq {
+        private Long dailyId;
+        private List<Long> photoIds;
+    }
 }
