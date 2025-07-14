@@ -1,5 +1,6 @@
 package com.sw.escort.user.entity;
 
+import com.sw.escort.daily.entity.Daily;
 import com.sw.escort.global.BaseEntity;
 import com.sw.escort.relationship.entity.Relationship;
 import com.sw.escort.relationship.entity.RelationshipRequest;
@@ -43,6 +44,9 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RelationshipRequest> receivedRequests = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Daily> dailies = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "profile_image_id")
