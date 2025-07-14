@@ -31,4 +31,21 @@ public class DailyDtoRes {
         private LocalDate monthlyDayRecording;
         private String imageUrl;
     }
+
+    @Data
+    @AllArgsConstructor
+    @Builder
+    public static class ConversationRes {
+        private boolean success;
+        private int count;
+        private List<EachConversationRes> conversations;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @Builder
+    public static class EachConversationRes {
+        private String speaker;
+        private String content;
+    }
 }
