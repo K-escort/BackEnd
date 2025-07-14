@@ -10,5 +10,5 @@ import java.util.List;
 
 @Repository
 public interface DailyVideoRepository extends JpaRepository<DailyVideo, Long> {
-    List<DailyVideo> findByDaily(Daily daily);
+    DailyVideo findByDaily(Daily daily);
 }
