@@ -7,6 +7,8 @@ import com.sw.escort.daily.converter.DailyConverter;
 import com.sw.escort.daily.dto.req.DailyDtoReq;
 import com.sw.escort.daily.dto.res.DailyDtoRes;
 import com.sw.escort.daily.entity.Daily;
+import com.sw.escort.daily.entity.DailyConversation;
+import com.sw.escort.daily.repository.DailyConversationRepository;
 import com.sw.escort.daily.repository.DailyImageRepository;
 import com.sw.escort.daily.repository.DailyRepository;
 import com.sw.escort.global.util.AmazonS3Util;
@@ -36,6 +38,7 @@ public class DailyServiceImpl implements DailyService {
     private final UserRepository userRepository;
     private final AmazonS3Util amazonS3Util;
     private final DailyConverter dailyConverter;
+    private final DailyConversationRepository dailyConversationRepository;
     private final DailyImageRepository dailyImageRepository;
     private static final int MAX_DAILY_IMAGES = 3; //그림 3개로 제한
     private final PythonAiClient pythonAiClient;
@@ -57,14 +60,20 @@ public class DailyServiceImpl implements DailyService {
         Daily daily = dailyRepository.findByUserIdAndDailyDayRecording(userId, date)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.DAILY_NOT_FOUND));
         List<String> drawingImageUrls = amazonS3Util.getDailyImagePath(daily.getId());
-        List<String> dailyVideoUrls = amazonS3Util.getDailyVideoPath(daily.getId());
+        String dailyVideoUrl = amazonS3Util.getDailyVideoPath(daily.getId());
+        List<DailyConversation> dailyConversations = dailyConversationRepository.findByDailyId(daily.getId());
+
+        List<String> formattedConversations = dailyConversations.stream()
+                .map(conv -> conv.getSpeaker() + ": " + conv.getContent())
+                .collect(Collectors.toList());
 
         return DailyDtoRes.DailyRes.builder()
                 .createdAt(daily.getCreatedAt())
                 .updatedAt(daily.getUpdatedAt())
                 .dailyDayRecording(daily.getDailyDayRecording())
                 .imageUrls(drawingImageUrls)
-                .videoUrls(dailyVideoUrls)
+                .videoUrls(dailyVideoUrl)
+                .conversations(formattedConversations)
                 .feedback(daily.getFeedback())
                 .id(daily.getId())
                 .build();

@@ -133,16 +133,13 @@ public class AmazonS3Util {
     }
 
     @Transactional(readOnly = true)
-    public List<String> getDailyVideoPath(Long dailyId) {
+    public String getDailyVideoPath(Long dailyId) {
         Daily daily = dailyRepository.findById(dailyId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.DAILY_NOT_FOUND));
 
-        List<DailyVideo> dailyVideos = dailyVideoRepository.findByDaily(daily);
+        DailyVideo dailyVideo = dailyVideoRepository.findByDaily(daily);
 
-        return dailyVideos.stream()
-                .filter(image -> image.getUuid() != null && image.getOriginalFilename() != null)
-                .map(image -> amazonS3.getUrl(bucket, dailyVideoPath + "/" + image.getUuid() + "_" + image.getOriginalFilename()).toString())
-                .collect(Collectors.toList());
+        return amazonS3.getUrl(bucket, dailyVideoPath + "/" + dailyVideo.getUuid() + "_" + dailyVideo.getOriginalFilename()).toString();
 
     }
 
