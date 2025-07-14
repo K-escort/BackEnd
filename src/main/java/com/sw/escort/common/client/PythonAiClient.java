@@ -1,5 +1,6 @@
 package com.sw.escort.common.client;
 
+import com.sw.escort.chat.dto.req.ChatStartReq;
 import com.sw.escort.chat.dto.res.ChatResponse;
 import com.sw.escort.user.entity.User;
 import com.sw.escort.user.entity.UserInfo;
@@ -25,10 +26,15 @@ public class PythonAiClient {
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .build();
 
-    public ChatResponse.ChatDetail sendChatToPython(User user, UserInfo info, String userPrompt) {
+    public ChatResponse.ChatDetail sendChatToPython(User user, UserInfo info, ChatStartReq req) {
         Map<String, Object> payload = new HashMap<>();
         payload.put("user_id", String.valueOf(user.getId()));
-        payload.put("user_prompt", userPrompt); //null 이면 대화 시작으로 인식
+        payload.put("topic", req.getTopic());
+
+        String prompt = req.getUserPrompt(); //null 이면 대화 시작으로 인식
+        if (prompt != null && !prompt.trim().isEmpty()) {
+            payload.put("user_prompt", prompt);
+        }
 
         Map<String, Object> userInfoMap = new HashMap<>();
         userInfoMap.put("age", String.valueOf(info.getAge()));
