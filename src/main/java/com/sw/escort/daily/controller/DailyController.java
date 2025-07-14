@@ -27,8 +27,8 @@ public class DailyController {
 
     @Operation(summary = "데일리 기록 세부 조회 API", description = "데일리 기록의 세부 사항을 조회합니다")
     @GetMapping("/get/daily")
-    public ApiResponse<DailyDtoRes.DailyRes> getdaily(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        Long userId = jwtTokenProvider.getUserIdFromToken();
+    public ApiResponse<DailyDtoRes.DailyRes> getdaily(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                                                      @RequestParam Long userId) {
         return ApiResponse.onSuccess(dailyService.getDaily(userId, date));
     }
 
@@ -39,16 +39,14 @@ public class DailyController {
         return ApiResponse.onSuccess(dailyService.getMonthly(userId, date));
     }
 
-    @Operation(summary = "데일리 기록 저장 API", description = "사용자가 데일리 기록을 저장합니다.")
+    @Operation(summary = "치료사 피드백 저장 API", description = "치료사가 피드백을 저장합니다.")
     @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<String> postDaily(
-            @RequestPart("daily") @Valid DailyDtoReq.RecordDailyReq dailyDtoReq,
-            @RequestPart(value = "dailyImages", required = false) List<MultipartFile> dailyImages,
-            @RequestPart(value = "dailyVideos", required = false) List<MultipartFile> dailyVideos) throws IOException {
+            @RequestPart("daily") @Valid DailyDtoReq.RecordFeedbackReq dailyDtoReq){
 
         Long userId = jwtTokenProvider.getUserIdFromToken();
-        dailyService.saveDaily(userId, dailyDtoReq, dailyImages,dailyVideos);
-        return ApiResponse.onSuccess("데일리 기록 저장완료");
+        dailyService.saveFeedback(userId, dailyDtoReq);
+        return ApiResponse.onSuccess("치료사 피드백 기록 완료");
     }
 
 //    @Operation(summary = "데일리 기록 수정 API", description = "사용자가 데일리 기록을 저장합니다.")

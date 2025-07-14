@@ -41,28 +41,14 @@ public class DailyServiceImpl implements DailyService {
     private final PythonAiClient pythonAiClient;
 
     @Override
-    public void saveDaily(Long userId, DailyDtoReq.RecordDailyReq req, List<MultipartFile> dailyImages, List<MultipartFile> dailyVideos) throws IOException {
+    public void saveFeedback(Long userId, DailyDtoReq.RecordFeedbackReq req){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
-        if (dailyRepository.existsByUserIdAndDailyDayRecording(userId, req.getDailyDayRecording())) {
-            throw new GeneralException(ErrorStatus.DAILY_ALREADY_EXISTS);
-        }
 
-
-        if(dailyImages != null){
-            if(dailyImages.size() > MAX_DAILY_IMAGES){
-                throw new GeneralException(ErrorStatus.FILE_ONLY_THREE);
-            }
+        if(!user.getRole().name().equals("HEALER")){
+            throw new GeneralException(ErrorStatus.ONLY_HEALER);
         }
-
-        Daily savedDaily = dailyRepository.save(dailyConverter.toEntity(req, user));
-        if (dailyImages != null && !dailyImages.isEmpty()) {
-            amazonS3Util.uploadDailyImages(dailyImages, savedDaily);
-        }
-
-        if (dailyVideos != null && !dailyVideos.isEmpty()) {
-            amazonS3Util.uploadDailyVideos(dailyVideos, savedDaily);
-        }
+        dailyRepository.save(dailyConverter.toEntity(req, user));
     }
 
     @Override

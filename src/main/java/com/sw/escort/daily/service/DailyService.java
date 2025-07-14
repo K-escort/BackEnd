@@ -12,7 +12,7 @@ import java.util.List;
 
 @Service
 public interface DailyService {
-    void saveDaily(Long userId, DailyDtoReq.RecordDailyReq dailyDTOReq, List<MultipartFile> dailyImages, List<MultipartFile> dailyVideos) throws IOException;
+    void saveFeedback(Long userId, DailyDtoReq.RecordFeedbackReq req);
     DailyDtoRes.DailyRes getDaily(Long userId, LocalDate date);
     List<DailyDtoRes.MonthlyRes> getMonthly(Long userId, YearMonth date);
 }
