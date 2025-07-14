@@ -16,8 +16,9 @@ public class DailyDtoRes {
         private Long id;
         private LocalDate dailyDayRecording;
         private String feedback;
+        private List<String> conversations;
         private List<String> imageUrls;
-        private List<String> videoUrls;
+        private String videoUrls;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
     }
