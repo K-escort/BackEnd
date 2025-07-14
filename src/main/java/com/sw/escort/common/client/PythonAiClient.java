@@ -2,6 +2,7 @@ package com.sw.escort.common.client;
 
 import com.sw.escort.chat.dto.req.ChatStartReq;
 import com.sw.escort.chat.dto.res.ChatResponse;
+import com.sw.escort.media.entity.UserInfoPhoto;
 import com.sw.escort.user.entity.User;
 import com.sw.escort.user.entity.UserInfo;
 import lombok.RequiredArgsConstructor;
@@ -75,5 +76,27 @@ public class PythonAiClient {
                 .block();
     }
 
+    public List<MultipartFile> requestImageGeneration(User user, List<UserInfoPhoto> photos) {
+        List<Map<String, Object>> photoList = photos.stream().map(p -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("description", p.getDescription());
+            map.put("relation_to_patient", p.getRelationToPatient());
+            map.put("url", p.getUrl());
+            return map;
+        }).toList();
+
+        Map<String, Object> request = new HashMap<>();
+        request.put("user_id", String.valueOf(user.getId()));
+        request.put("photos", photoList);
+
+        // Python 서버 호출 → 이미지 파일 목록(Multipart) 응답
+        return webClient.post()
+                .uri("/ai/generate-recall-video-frames")
+                .bodyValue(request)
+                .retrieve()
+                .bodyToFlux(MultipartFile.class)
+                .collectList()
+                .block();
+    }
 }
 
