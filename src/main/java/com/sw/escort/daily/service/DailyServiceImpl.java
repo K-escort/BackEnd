@@ -63,7 +63,6 @@ public class DailyServiceImpl implements DailyService {
                 .createdAt(daily.getCreatedAt())
                 .updatedAt(daily.getUpdatedAt())
                 .dailyDayRecording(daily.getDailyDayRecording())
-                .conversation(daily.getConversation())
                 .imageUrls(drawingImageUrls)
                 .videoUrls(dailyVideoUrls)
                 .feedback(daily.getFeedback())
