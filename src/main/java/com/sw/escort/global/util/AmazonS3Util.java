@@ -118,6 +118,7 @@ public class AmazonS3Util {
         dailyImageRepository.flush();
     }
 
+    @Transactional(readOnly = true)
     public List<String> getDailyImagePath(Long dailyId) {
         Daily daily = dailyRepository.findById(dailyId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.DAILY_NOT_FOUND));
@@ -131,6 +132,7 @@ public class AmazonS3Util {
 
     }
 
+    @Transactional(readOnly = true)
     public List<String> getDailyVideoPath(Long dailyId) {
         Daily daily = dailyRepository.findById(dailyId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.DAILY_NOT_FOUND));
@@ -176,6 +178,36 @@ public class AmazonS3Util {
 
         dailyImageRepository.flush();
     }
+
+    @Transactional
+    public String uploadDailyImageAndSaveMeta(MultipartFile file, Daily daily) {
+        validateImage(file);
+
+        String uuid = UUID.randomUUID().toString();
+        String key = dailyImagePath + "/" + uuid + "_" + file.getOriginalFilename();
+
+        try {
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentLength(file.getSize());
+            metadata.setContentType(file.getContentType());
+            amazonS3Client.putObject(bucket, key, file.getInputStream(), metadata);
+
+            DailyImage dailyImage = DailyImage.builder()
+                    .uuid(uuid)
+                    .originalFilename(file.getOriginalFilename())
+                    .contentType(file.getContentType())
+                    .fileSize(file.getSize())
+                    .daily(daily)
+                    .build();
+
+            dailyImageRepository.save(dailyImage);
+            return amazonS3Client.getUrl(bucket, key).toString();
+
+        } catch (IOException e) {
+            throw new GeneralException(ErrorStatus.FILE_UPLOAD_FAIL);
+        }
+    }
+
 
     public void deleteFile(String fileUrlOrKey) {
         try {

@@ -43,6 +43,8 @@ cloud:
       path:
         userInfo: userInfo
         publicData: publicData
+        dailyVideo: dailyVideo
+        dailyImage: dailyImage
       bucket: ${AWS_S3_BUCKET}
     region:
       static: ap-northeast-2

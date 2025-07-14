@@ -2,6 +2,8 @@ package com.sw.escort.common.client;
 
 import com.sw.escort.chat.dto.req.ChatStartReq;
 import com.sw.escort.chat.dto.res.ChatResponse;
+import com.sw.escort.daily.dto.res.DailyDtoRes;
+import com.sw.escort.media.entity.UserInfoPhoto;
 import com.sw.escort.user.entity.User;
 import com.sw.escort.user.entity.UserInfo;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,5 +78,41 @@ public class PythonAiClient {
                 .block();
     }
 
+    public DailyDtoRes.ConversationRes fetchAiConversation(Long userId, LocalDate localDate) {
+        // WebClient를 사용하여 FastAPI 엔드포인트 호출
+        return webClient.get() // GET 요청으로 변경 (FastAPI 코드가 @app.get 사용)
+                .uri(uriBuilder -> uriBuilder
+                        .path("/ai/conversation-by-date")
+                        .queryParam("user_id", userId.toString())
+                        .queryParam("date", localDate.toString())
+                        .build())
+                .retrieve()
+                .bodyToMono(DailyDtoRes.ConversationRes.class) // 응답을 String으로 받음
+                .block(); // 동기적으로 결과 반환 (필요에 따라 비동기 처리 가능)
+    }
+
+
+    public List<MultipartFile> requestImageGeneration(User user, List<UserInfoPhoto> photos) {
+        List<Map<String, Object>> photoList = photos.stream().map(p -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("description", p.getDescription());
+            map.put("relation_to_patient", p.getRelationToPatient());
+            map.put("url", p.getUrl());
+            return map;
+        }).toList();
+
+        Map<String, Object> request = new HashMap<>();
+        request.put("user_id", String.valueOf(user.getId()));
+        request.put("photos", photoList);
+
+        // Python 서버 호출 → 이미지 파일 목록(Multipart) 응답
+        return webClient.post()
+                .uri("/ai/generate-recall-video-frames")
+                .bodyValue(request)
+                .retrieve()
+                .bodyToFlux(MultipartFile.class)
+                .collectList()
+                .block();
+    }
 }
 
