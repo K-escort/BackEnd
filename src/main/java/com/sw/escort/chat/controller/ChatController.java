@@ -24,7 +24,7 @@ public class ChatController {
     @PostMapping("/start")
     public ApiResponse<ChatResponse.ChatDetail> startChat(@RequestBody ChatStartReq req) {
         Long userId = jwtTokenProvider.getUserIdFromToken();
-        return ApiResponse.onSuccess(chatService.startChat(userId, req.getUserPrompt()));
+        return ApiResponse.onSuccess(chatService.startChat(userId, req));
     }
 }
 
