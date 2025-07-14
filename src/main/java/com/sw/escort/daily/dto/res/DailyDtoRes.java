@@ -47,5 +47,6 @@ public class DailyDtoRes {
     public static class EachConversationRes {
         private String speaker;
         private String content;
+        private LocalDateTime timeStamp;
     }
 }

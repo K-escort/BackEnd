@@ -30,11 +30,11 @@ public class Daily extends BaseEntity {
     @Column(nullable = false)
     private LocalDate dailyDayRecording;
 
-    @Column(columnDefinition = "TEXT")
-    private String conversation;
-
     @Column
     private String feedback;
+
+    @OneToMany(mappedBy = "daily", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<DailyConversation> conversations;
 
     @OneToMany(mappedBy = "daily",cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<DailyImage> dailyImages;

@@ -4,6 +4,8 @@ import com.sw.escort.global.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -26,4 +28,7 @@ public class DailyConversation extends BaseEntity {
 
     @Column
     private String content;
+
+    @Column
+    private LocalDateTime timeStamp;
 }
