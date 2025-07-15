@@ -137,6 +137,7 @@ public class AmazonS3Util {
         Daily daily = dailyRepository.findById(dailyId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.DAILY_NOT_FOUND));
         return dailyVideoRepository.findByDaily(daily)
+                .filter(video -> video.getUuid() != null && video.getOriginalFilename() != null)
                 .map(dailyVideo -> amazonS3.getUrl(bucket, dailyVideoPath + "/" +
                         dailyVideo.getUuid() + "_" + dailyVideo.getOriginalFilename()).toString())
                 .orElse(null);
