@@ -19,7 +19,7 @@ public class DailyDtoRes {
         private String feedback;
         private List<String> conversations;
         private List<String> imageUrls;
-        private String videoUrls;
+        private String videoUrl;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
     }

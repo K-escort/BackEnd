@@ -48,6 +48,10 @@ public enum ErrorStatus implements BaseErrorCode {
 
     //DailyConversation
     DAILY_CONVERSATION_NOT_FOUND(HttpStatus.NOT_FOUND,"DAILYCONVERSATION4000", "대화를 찾을 수 없습니다."),
+
+    //DailyVideo
+    DAILY_VIDEO_NOT_FOUND(HttpStatus.NOT_FOUND,"DAILYVIDEO4000", "영상을 찾을 수 없습니다."),
+
     //paging
     INVALID_PAGE_PARAMETER(HttpStatus.BAD_REQUEST, "PAGE400", "잘못된 페이지 값입니다. 1 이상의 정수로 입력해주세요."),
 

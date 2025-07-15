@@ -43,10 +43,9 @@ public class DailyController {
     @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ApiResponse<String> postDaily(@RequestParam String feedback,
                                          @RequestParam Long patientId,
-                                         @RequestParam Long dailyId){
+                                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
 
-        Long userId = jwtTokenProvider.getUserIdFromToken();
-        dailyService.saveFeedback(patientId, feedback, dailyId);
+        dailyService.saveFeedback(patientId, feedback, date);
         return ApiResponse.onSuccess("치료사 피드백 기록 완료");
     }
 
