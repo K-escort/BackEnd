@@ -44,14 +44,14 @@ public class DailyServiceImpl implements DailyService {
     private final PythonAiClient pythonAiClient;
 
     @Override
-    public void saveFeedback(Long patientId, String feedback, Long dailyId){
+    public void saveFeedback(Long patientId, String feedback, LocalDate date){
         User user = userRepository.findById(patientId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
         if(!user.getRole().name().equals("HEALER")){
             throw new GeneralException(ErrorStatus.ONLY_HEALER);
         }
-        Daily daily = dailyRepository.findById(dailyId).orElseThrow(() -> new GeneralException(ErrorStatus.DAILY_NOT_FOUND));
+        Daily daily = dailyRepository.findByUserIdAndDailyDayRecording(patientId, date).orElseThrow(() -> new GeneralException(ErrorStatus.DAILY_NOT_FOUND));
         daily.setFeedback(feedback);
         dailyRepository.flush();
     }
@@ -74,7 +74,7 @@ public class DailyServiceImpl implements DailyService {
                 .updatedAt(daily.getUpdatedAt())
                 .dailyDayRecording(daily.getDailyDayRecording())
                 .imageUrls(drawingImageUrls.isEmpty() ? null : drawingImageUrls)
-                .videoUrls(dailyVideoUrl.isEmpty() ? null : dailyVideoUrl)
+                .videoUrl(dailyVideoUrl.isEmpty() ? null : dailyVideoUrl)
                 .conversations(formattedConversations)
                 .feedback(daily.getFeedback())
                 .userId(userId)
