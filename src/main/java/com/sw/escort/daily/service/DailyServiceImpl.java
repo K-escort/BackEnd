@@ -44,14 +44,16 @@ public class DailyServiceImpl implements DailyService {
     private final PythonAiClient pythonAiClient;
 
     @Override
-    public void saveFeedback(Long userId, DailyDtoReq.RecordFeedbackReq req){
-        User user = userRepository.findById(userId)
+    public void saveFeedback(Long patientId, String feedback, Long dailyId){
+        User user = userRepository.findById(patientId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
         if(!user.getRole().name().equals("HEALER")){
             throw new GeneralException(ErrorStatus.ONLY_HEALER);
         }
-        dailyRepository.save(dailyConverter.toEntity(req, user));
+        Daily daily = dailyRepository.findById(dailyId).orElseThrow(() -> new GeneralException(ErrorStatus.DAILY_NOT_FOUND));
+        daily.setFeedback(feedback);
+        dailyRepository.flush();
     }
 
     @Override
@@ -71,10 +73,11 @@ public class DailyServiceImpl implements DailyService {
                 .createdAt(daily.getCreatedAt())
                 .updatedAt(daily.getUpdatedAt())
                 .dailyDayRecording(daily.getDailyDayRecording())
-                .imageUrls(drawingImageUrls)
-                .videoUrls(dailyVideoUrl)
+                .imageUrls(drawingImageUrls.isEmpty() ? null : drawingImageUrls)
+                .videoUrls(dailyVideoUrl.isEmpty() ? null : dailyVideoUrl)
                 .conversations(formattedConversations)
                 .feedback(daily.getFeedback())
+                .userId(userId)
                 .id(daily.getId())
                 .build();
     }
@@ -101,6 +104,7 @@ public class DailyServiceImpl implements DailyService {
             if (daily == null) {
                 result.add(DailyDtoRes.MonthlyRes.builder()
                         .id(null)
+                        .userId(userId)
                         .monthlyDayRecording(current)
                         .imageUrl(null)
                         .build());
@@ -112,6 +116,7 @@ public class DailyServiceImpl implements DailyService {
 
                 result.add(DailyDtoRes.MonthlyRes.builder()
                         .id(daily.getId())
+                        .userId(userId)
                         .monthlyDayRecording(current)
                         .imageUrl(imageUrl)
                         .build());

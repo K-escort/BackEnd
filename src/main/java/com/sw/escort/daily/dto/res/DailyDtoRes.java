@@ -14,6 +14,7 @@ public class DailyDtoRes {
     @Builder
     public static class DailyRes {
         private Long id;
+        private Long userId;
         private LocalDate dailyDayRecording;
         private String feedback;
         private List<String> conversations;
@@ -28,6 +29,7 @@ public class DailyDtoRes {
     @Builder
     public static class MonthlyRes {
         private Long id;
+        private Long userId;
         private LocalDate monthlyDayRecording;
         private String imageUrl;
     }
