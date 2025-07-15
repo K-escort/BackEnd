@@ -139,6 +139,11 @@ public class AmazonS3Util {
 
         DailyVideo dailyVideo = dailyVideoRepository.findByDaily(daily);
 
+        if (dailyVideo == null || dailyVideo.getUuid() == null || dailyVideo.getOriginalFilename() == null) {
+            return null;
+        }
+
+
         return amazonS3.getUrl(bucket, dailyVideoPath + "/" + dailyVideo.getUuid() + "_" + dailyVideo.getOriginalFilename()).toString();
 
     }

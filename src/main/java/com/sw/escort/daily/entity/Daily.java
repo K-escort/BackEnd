@@ -39,8 +39,8 @@ public class Daily extends BaseEntity {
     @OneToMany(mappedBy = "daily",cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<DailyImage> dailyImages;
 
-    @OneToMany(mappedBy = "daily",cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<DailyVideo> dailyVideos;
+    @OneToOne(mappedBy = "daily",cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private DailyVideo dailyVideo;
 
     /*
     * //TODO 대화 전체 내용(파이썬 호출로 저장),

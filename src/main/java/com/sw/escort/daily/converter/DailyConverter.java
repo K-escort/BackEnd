@@ -26,7 +26,6 @@ public class DailyConverter {
 
     public Daily toEntity(DailyDtoReq.RecordFeedbackReq dto, User user) {
         return Daily.builder()
-                .dailyDayRecording(dto.getDailyDayRecording())
                 .feedback(dto.getFeedback())
                 .build();
     }
