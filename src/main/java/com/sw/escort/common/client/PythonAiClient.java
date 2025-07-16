@@ -116,10 +116,23 @@ public class PythonAiClient {
                 .block();
     }
 
-    public List<String> fetchTopicFileNames(Long userId, Long userInfoId) {
+    public List<String> fetchTopicFileNames(Long userId, UserInfo info) {
         Map<String, Object> request = new HashMap<>();
         request.put("user_id", userId);
-        request.put("user_info_id", userInfoId);
+
+        Map<String, Object> userInfoMap = new HashMap<>();
+        userInfoMap.put("age", String.valueOf(info.getAge()));
+        userInfoMap.put("gender", info.getGender()); // MALE, FEMALE
+        userInfoMap.put("cognitiveStatus", info.getCognitiveStatus().name());
+        userInfoMap.put("hometown", info.getHometown());
+        userInfoMap.put("lifeHistory", info.getLifeHistory());
+        userInfoMap.put("familyInfo", info.getFamilyInfo());
+        userInfoMap.put("education", info.getEducation());
+        userInfoMap.put("occupation", info.getOccupation());
+        userInfoMap.put("forbiddenKeywords", info.getForbiddenKeywords());
+        userInfoMap.put("lifetimeline", info.getLifetimeline());
+
+        request.put("user_info", userInfoMap);
 
         return webClient.post()
                 .uri("/ai/select-topic")
