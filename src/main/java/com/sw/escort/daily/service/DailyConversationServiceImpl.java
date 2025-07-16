@@ -29,7 +29,7 @@ public class DailyConversationServiceImpl implements DailyConversationService {
     private final UserRepository userRepository;
 
     @Override
-    public Long saveConversations(Long userId, LocalDate localDate) {
+    public DailyDtoRes.DailyConversationRes saveConversations(Long userId, LocalDate localDate) {
 
 
         Optional<Daily> dailyOptional = dailyRepository.findByUserIdAndDailyDayRecording(userId, localDate);
@@ -71,10 +71,9 @@ public class DailyConversationServiceImpl implements DailyConversationService {
              dailyConversationRepository.flush();
         }
 
-        return daily.getId();
+        return DailyDtoRes.DailyConversationRes.builder()
+                .dailyId(daily.getId())
+                .build();
     }
-
-
-
 
 }

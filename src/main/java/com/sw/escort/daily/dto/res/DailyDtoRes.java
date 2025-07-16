@@ -62,4 +62,11 @@ public class DailyDtoRes {
         private LocalDateTime timeStamp;
 
     }
+
+    @Data
+    @AllArgsConstructor
+    @Builder
+    public static class DailyConversationRes {
+        private Long dailyId;
+    }
 }
