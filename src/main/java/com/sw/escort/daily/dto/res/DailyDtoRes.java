@@ -42,6 +42,7 @@ public class DailyDtoRes {
     public static class DailyImageUploadRes {
         private Long dailyImageId;
         private String url;
+    }
 
     @Data
     @AllArgsConstructor
