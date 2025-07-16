@@ -31,7 +31,7 @@ public class ChatTopicServiceImpl implements ChatTopicService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_INFO_NOT_FOUND));
 
         // AI 서버에 파일명 요청
-        List<String> fileNames = pythonAiClient.fetchTopicFileNames(user.getId(), userInfo.getId());
+        List<String> fileNames = pythonAiClient.fetchTopicFileNames(user.getId(), userInfo);
 
         // S3에서 URL 매핑
         return fileNames.stream()
