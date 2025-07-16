@@ -138,8 +138,8 @@ public class PythonAiClient {
                 .uri("/ai/select-topic")
                 .bodyValue(request)
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<String>>() {})
-                //응답이 List<String>라고 명시 -> 자바에서 List<String>으로 바꿈
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {}) // 1단계: 전체 Map으로 받기
+                .map(map -> (List<String>) map.get("response")) // 2단계: response 필드 꺼내기
                 .block();
     }
 
