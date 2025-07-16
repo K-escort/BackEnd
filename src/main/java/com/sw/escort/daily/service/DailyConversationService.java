@@ -6,5 +6,5 @@ import java.time.LocalDate;
 
 @Service
 public interface DailyConversationService {
-    void saveConversations(Long userId, LocalDate localDate);
+    Long saveConversations(Long userId, LocalDate localDate);
 }
