@@ -33,6 +33,9 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role; // 보호자 or 기억지기(환자)
 
+    @OneToOne(mappedBy = "user")
+    private UserInfo userInfo;
+
     @OneToMany(mappedBy = "fromUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Relationship> sentRelationships = new ArrayList<>();
 

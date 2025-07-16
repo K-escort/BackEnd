@@ -3,6 +3,7 @@ package com.sw.escort.daily.dto.res;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -34,6 +35,14 @@ public class DailyDtoRes {
         private String imageUrl;
     }
 
+
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    public static class DailyImageUploadRes {
+        private Long dailyImageId;
+        private String url;
+
     @Data
     @AllArgsConstructor
     @Builder
@@ -50,5 +59,6 @@ public class DailyDtoRes {
         private String speaker;
         private String content;
         private LocalDateTime timeStamp;
+
     }
 }
