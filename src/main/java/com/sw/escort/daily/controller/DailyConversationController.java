@@ -21,9 +21,8 @@ public class DailyConversationController {
 
     @Operation(summary = "대화 기록 저장 API", description = "대화 기록을 저장합니다")
     @PostMapping("/save")
-    public ApiResponse<String> saveConversation(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+    public ApiResponse<DailyDtoRes.DailyConversationRes> saveConversation(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         Long userId = jwtTokenProvider.getUserIdFromToken();
-        dailyConversationService.saveConversations(userId, date);
-        return ApiResponse.onSuccess("대화 기록 저장 완료");
+        return ApiResponse.onSuccess(dailyConversationService.saveConversations(userId, date));
     }
 }

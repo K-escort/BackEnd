@@ -12,7 +12,7 @@ import java.util.List;
 
 @Service
 public interface DailyService {
-    void saveFeedback(Long userId, DailyDtoReq.RecordFeedbackReq req);
+    void saveFeedback(Long userId, Long patientId, String feedback, LocalDate date);
     DailyDtoRes.DailyRes getDaily(Long userId, LocalDate date);
     List<DailyDtoRes.MonthlyRes> getMonthly(Long userId, YearMonth date);
 }

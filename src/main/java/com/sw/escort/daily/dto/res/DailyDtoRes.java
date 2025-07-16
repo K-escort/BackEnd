@@ -3,6 +3,7 @@ package com.sw.escort.daily.dto.res;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,11 +15,12 @@ public class DailyDtoRes {
     @Builder
     public static class DailyRes {
         private Long id;
+        private Long userId;
         private LocalDate dailyDayRecording;
         private String feedback;
         private List<String> conversations;
         private List<String> imageUrls;
-        private String videoUrls;
+        private String videoUrl;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
     }
@@ -28,8 +30,18 @@ public class DailyDtoRes {
     @Builder
     public static class MonthlyRes {
         private Long id;
+        private Long userId;
         private LocalDate monthlyDayRecording;
         private String imageUrl;
+    }
+
+
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    public static class DailyImageUploadRes {
+        private Long dailyImageId;
+        private String url;
     }
 
     @Data
@@ -48,5 +60,13 @@ public class DailyDtoRes {
         private String speaker;
         private String content;
         private LocalDateTime timeStamp;
+
+    }
+
+    @Data
+    @AllArgsConstructor
+    @Builder
+    public static class DailyConversationRes {
+        private Long dailyId;
     }
 }

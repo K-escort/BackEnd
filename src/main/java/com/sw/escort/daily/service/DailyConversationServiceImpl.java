@@ -29,7 +29,7 @@ public class DailyConversationServiceImpl implements DailyConversationService {
     private final UserRepository userRepository;
 
     @Override
-    public void saveConversations(Long userId, LocalDate localDate) {
+    public DailyDtoRes.DailyConversationRes saveConversations(Long userId, LocalDate localDate) {
 
 
         Optional<Daily> dailyOptional = dailyRepository.findByUserIdAndDailyDayRecording(userId, localDate);
@@ -53,6 +53,7 @@ public class DailyConversationServiceImpl implements DailyConversationService {
         List<DailyDtoRes.EachConversationRes> conversations = conversationRes.getConversations();
         if (conversations != null && !conversations.isEmpty()) {
             for (DailyDtoRes.EachConversationRes eachConversation : conversations) {
+                if(eachConversation.getSpeaker().equals("system")) continue;
                 boolean isDuplicate = existingConversations.stream()
                         .anyMatch(ec -> ec.getSpeaker().equals(eachConversation.getSpeaker())
                                 && ec.getContent().equals(eachConversation.getContent()));
@@ -69,9 +70,10 @@ public class DailyConversationServiceImpl implements DailyConversationService {
             }
              dailyConversationRepository.flush();
         }
+
+        return DailyDtoRes.DailyConversationRes.builder()
+                .dailyId(daily.getId())
+                .build();
     }
-
-
-
 
 }

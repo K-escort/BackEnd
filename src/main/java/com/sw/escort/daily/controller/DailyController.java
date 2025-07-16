@@ -40,12 +40,13 @@ public class DailyController {
     }
 
     @Operation(summary = "치료사 피드백 저장 API", description = "치료사가 피드백을 저장합니다.")
-    @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ApiResponse<String> postDaily(
-            @RequestPart("daily") @Valid DailyDtoReq.RecordFeedbackReq dailyDtoReq){
+    @PostMapping(value = "/save")
+    public ApiResponse<String> postDaily(@RequestParam String feedback,
+                                         @RequestParam Long patientId,
+                                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
 
         Long userId = jwtTokenProvider.getUserIdFromToken();
-        dailyService.saveFeedback(userId, dailyDtoReq);
+        dailyService.saveFeedback(userId, patientId, feedback, date);
         return ApiResponse.onSuccess("치료사 피드백 기록 완료");
     }
 
