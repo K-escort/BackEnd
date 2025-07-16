@@ -94,7 +94,7 @@ public class PythonAiClient {
 
 
     public List<MultipartFile> requestImageGeneration(User user, List<UserInfoPhoto> photos) {
-        List<Map<String, Object>> photoList = photos.stream().map(p -> {
+        List<Map<String, Object>> imageList = photos.stream().map(p -> {
             Map<String, Object> map = new HashMap<>();
             map.put("description", p.getDescription());
             map.put("relation_to_patient", p.getRelationToPatient());
@@ -104,7 +104,7 @@ public class PythonAiClient {
 
         Map<String, Object> request = new HashMap<>();
         request.put("user_id", String.valueOf(user.getId()));
-        request.put("photos", photoList);
+        request.put("images", imageList);
 
         // Python 서버 호출 → 이미지 파일 목록(Multipart) 응답
         return webClient.post()
