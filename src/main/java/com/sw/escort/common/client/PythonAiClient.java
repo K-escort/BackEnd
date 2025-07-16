@@ -118,7 +118,7 @@ public class PythonAiClient {
 
     public List<String> fetchTopicFileNames(Long userId, UserInfo info) {
         Map<String, Object> request = new HashMap<>();
-        request.put("user_id", userId);
+        request.put("user_id", String.valueOf(userId)); // 이거 까먹지 말기...
 
         Map<String, Object> userInfoMap = new HashMap<>();
         userInfoMap.put("age", String.valueOf(info.getAge()));
