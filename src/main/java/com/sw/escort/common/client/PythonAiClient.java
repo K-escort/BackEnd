@@ -7,6 +7,7 @@ import com.sw.escort.media.entity.UserInfoPhoto;
 import com.sw.escort.user.entity.User;
 import com.sw.escort.user.entity.UserInfo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
@@ -114,5 +115,20 @@ public class PythonAiClient {
                 .collectList()
                 .block();
     }
+
+    public List<String> fetchTopicFileNames(Long userId, Long userInfoId) {
+        Map<String, Object> request = new HashMap<>();
+        request.put("user_id", userId);
+        request.put("user_info_id", userInfoId);
+
+        return webClient.post()
+                .uri("/ai/select-topic")
+                .bodyValue(request)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<String>>() {})
+                //응답이 List<String>라고 명시 -> 자바에서 List<String>으로 바꿈
+                .block();
+    }
+
 }
 

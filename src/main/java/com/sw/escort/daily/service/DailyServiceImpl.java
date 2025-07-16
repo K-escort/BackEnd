@@ -2,14 +2,10 @@ package com.sw.escort.daily.service;
 
 import com.sw.escort.apiPayload.code.exception.GeneralException;
 import com.sw.escort.apiPayload.code.status.ErrorStatus;
-import com.sw.escort.common.client.PythonAiClient;
-import com.sw.escort.daily.converter.DailyConverter;
-import com.sw.escort.daily.dto.req.DailyDtoReq;
 import com.sw.escort.daily.dto.res.DailyDtoRes;
 import com.sw.escort.daily.entity.Daily;
 import com.sw.escort.daily.entity.DailyConversation;
 import com.sw.escort.daily.repository.DailyConversationRepository;
-import com.sw.escort.daily.repository.DailyImageRepository;
 import com.sw.escort.daily.repository.DailyRepository;
 import com.sw.escort.global.util.AmazonS3Util;
 import com.sw.escort.user.entity.User;
@@ -18,9 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
@@ -37,11 +31,7 @@ public class DailyServiceImpl implements DailyService {
     private final DailyRepository dailyRepository;
     private final UserRepository userRepository;
     private final AmazonS3Util amazonS3Util;
-    private final DailyConverter dailyConverter;
     private final DailyConversationRepository dailyConversationRepository;
-    private final DailyImageRepository dailyImageRepository;
-    private static final int MAX_DAILY_IMAGES = 3; //그림 3개로 제한
-    private final PythonAiClient pythonAiClient;
 
     @Override
     public void saveFeedback(Long userId, Long patientId, String feedback, LocalDate date){
