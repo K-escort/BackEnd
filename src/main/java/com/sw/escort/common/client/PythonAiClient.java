@@ -134,12 +134,14 @@ public class PythonAiClient {
 
         request.put("user_info", userInfoMap);
 
+        ObjectMapper objectMapper = new ObjectMapper();
+
         return webClient.post()
                 .uri("/ai/select-topic")
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {}) // 1단계: 전체 Map으로 받기
-                .map(map -> (List<String>) map.get("response")) // 2단계: response 필드 꺼내기
+                .map(map -> objectMapper.convertValue(map.get("response"), new TypeReference<List<String>>() {}))// 2단계: response 필드 꺼내기
                 .block();
     }
 
