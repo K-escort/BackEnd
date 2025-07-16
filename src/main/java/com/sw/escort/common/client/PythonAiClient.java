@@ -1,5 +1,7 @@
 package com.sw.escort.common.client;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sw.escort.chat.dto.req.ChatStartReq;
 import com.sw.escort.chat.dto.res.ChatResponse;
 import com.sw.escort.daily.dto.res.DailyDtoRes;
