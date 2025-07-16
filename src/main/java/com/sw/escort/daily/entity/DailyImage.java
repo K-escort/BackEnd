@@ -8,7 +8,6 @@ import lombok.*;
 @Entity
 @Builder
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "daily_image")
@@ -23,11 +22,11 @@ public class DailyImage extends BaseEntity {
     @Column(nullable = false)
     private String originalFilename;
 
-    @Column
     private String contentType;
 
-    @Column
     private Long fileSize;
+
+    private String url;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "daily_id")
