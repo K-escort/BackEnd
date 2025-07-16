@@ -15,11 +15,12 @@ public class DailyDtoRes {
     @Builder
     public static class DailyRes {
         private Long id;
+        private Long userId;
         private LocalDate dailyDayRecording;
         private String feedback;
-        private String conversation;
+        private List<String> conversations;
         private List<String> imageUrls;
-        private List<String> videoUrls;
+        private String videoUrl;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
     }
@@ -29,9 +30,11 @@ public class DailyDtoRes {
     @Builder
     public static class MonthlyRes {
         private Long id;
+        private Long userId;
         private LocalDate monthlyDayRecording;
         private String imageUrl;
     }
+
 
     @Getter
     @AllArgsConstructor
@@ -39,5 +42,23 @@ public class DailyDtoRes {
     public static class DailyImageUploadRes {
         private Long dailyImageId;
         private String url;
+
+    @Data
+    @AllArgsConstructor
+    @Builder
+    public static class ConversationRes {
+        private boolean success;
+        private int count;
+        private List<EachConversationRes> conversations;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @Builder
+    public static class EachConversationRes {
+        private String speaker;
+        private String content;
+        private LocalDateTime timeStamp;
+
     }
 }

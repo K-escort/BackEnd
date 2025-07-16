@@ -30,17 +30,17 @@ public class Daily extends BaseEntity {
     @Column(nullable = false)
     private LocalDate dailyDayRecording;
 
-    @Column(columnDefinition = "TEXT")
-    private String conversation;
-
     @Column
     private String feedback;
+
+    @OneToMany(mappedBy = "daily", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<DailyConversation> conversations;
 
     @OneToMany(mappedBy = "daily",cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<DailyImage> dailyImages;
 
-    @OneToMany(mappedBy = "daily",cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<DailyVideo> dailyVideos;
+    @OneToOne(mappedBy = "daily",cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private DailyVideo dailyVideo;
 
     /*
     * //TODO 대화 전체 내용(파이썬 호출로 저장),

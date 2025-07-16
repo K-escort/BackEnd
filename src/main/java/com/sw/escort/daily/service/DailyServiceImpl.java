@@ -7,6 +7,8 @@ import com.sw.escort.daily.converter.DailyConverter;
 import com.sw.escort.daily.dto.req.DailyDtoReq;
 import com.sw.escort.daily.dto.res.DailyDtoRes;
 import com.sw.escort.daily.entity.Daily;
+import com.sw.escort.daily.entity.DailyConversation;
+import com.sw.escort.daily.repository.DailyConversationRepository;
 import com.sw.escort.daily.repository.DailyImageRepository;
 import com.sw.escort.daily.repository.DailyRepository;
 import com.sw.escort.global.util.AmazonS3Util;
@@ -36,33 +38,22 @@ public class DailyServiceImpl implements DailyService {
     private final UserRepository userRepository;
     private final AmazonS3Util amazonS3Util;
     private final DailyConverter dailyConverter;
+    private final DailyConversationRepository dailyConversationRepository;
     private final DailyImageRepository dailyImageRepository;
     private static final int MAX_DAILY_IMAGES = 3; //그림 3개로 제한
     private final PythonAiClient pythonAiClient;
 
     @Override
-    public void saveDaily(Long userId, DailyDtoReq.RecordDailyReq req, List<MultipartFile> dailyImages, List<MultipartFile> dailyVideos) throws IOException {
+    public void saveFeedback(Long userId, Long patientId, String feedback, LocalDate date){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
-        if (dailyRepository.existsByUserIdAndDailyDayRecording(userId, req.getDailyDayRecording())) {
-            throw new GeneralException(ErrorStatus.DAILY_ALREADY_EXISTS);
-        }
 
-
-        if(dailyImages != null){
-            if(dailyImages.size() > MAX_DAILY_IMAGES){
-                throw new GeneralException(ErrorStatus.FILE_ONLY_THREE);
-            }
+        if(!user.getRole().name().equals("HEALER")){
+            throw new GeneralException(ErrorStatus.ONLY_HEALER);
         }
-
-        Daily savedDaily = dailyRepository.save(dailyConverter.toEntity(req, user));
-        if (dailyImages != null && !dailyImages.isEmpty()) {
-            amazonS3Util.uploadDailyImages(dailyImages, savedDaily);
-        }
-
-        if (dailyVideos != null && !dailyVideos.isEmpty()) {
-            amazonS3Util.uploadDailyVideos(dailyVideos, savedDaily);
-        }
+        Daily daily = dailyRepository.findByUserIdAndDailyDayRecording(patientId, date).orElseThrow(() -> new GeneralException(ErrorStatus.DAILY_NOT_FOUND));
+        daily.setFeedback(feedback);
+        dailyRepository.flush();
     }
 
     @Override
@@ -71,16 +62,24 @@ public class DailyServiceImpl implements DailyService {
         Daily daily = dailyRepository.findByUserIdAndDailyDayRecording(userId, date)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.DAILY_NOT_FOUND));
         List<String> drawingImageUrls = amazonS3Util.getDailyImagePath(daily.getId());
-        List<String> dailyVideoUrls = amazonS3Util.getDailyVideoPath(daily.getId());
+        String dailyVideoUrl = amazonS3Util.getDailyVideoPath(daily.getId());
+        if (dailyVideoUrl == null || dailyVideoUrl.isEmpty()) {
+            dailyVideoUrl = null;
+        }
+        List<DailyConversation> dailyConversations = dailyConversationRepository.findByDailyId(daily.getId());
+        List<String> formattedConversations = dailyConversations.stream()
+                .map(conv -> conv.getSpeaker() + ": " + conv.getContent())
+                .collect(Collectors.toList());
 
         return DailyDtoRes.DailyRes.builder()
                 .createdAt(daily.getCreatedAt())
                 .updatedAt(daily.getUpdatedAt())
                 .dailyDayRecording(daily.getDailyDayRecording())
-                .conversation(daily.getConversation())
-                .imageUrls(drawingImageUrls)
-                .videoUrls(dailyVideoUrls)
+                .imageUrls((drawingImageUrls == null || drawingImageUrls.isEmpty()) ? null : drawingImageUrls)
+                .videoUrl(dailyVideoUrl)
+                .conversations(formattedConversations)
                 .feedback(daily.getFeedback())
+                .userId(userId)
                 .id(daily.getId())
                 .build();
     }
@@ -107,6 +106,7 @@ public class DailyServiceImpl implements DailyService {
             if (daily == null) {
                 result.add(DailyDtoRes.MonthlyRes.builder()
                         .id(null)
+                        .userId(userId)
                         .monthlyDayRecording(current)
                         .imageUrl(null)
                         .build());
@@ -118,6 +118,7 @@ public class DailyServiceImpl implements DailyService {
 
                 result.add(DailyDtoRes.MonthlyRes.builder()
                         .id(daily.getId())
+                        .userId(userId)
                         .monthlyDayRecording(current)
                         .imageUrl(imageUrl)
                         .build());

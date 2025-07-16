@@ -15,4 +15,6 @@ public interface DailyRepository extends JpaRepository<Daily,Long> {
     Optional<Daily> findByUserIdAndDailyDayRecording(Long userId, LocalDate date);
 
     List<Daily> findAllByUserIdAndDailyDayRecordingBetweenOrderByDailyDayRecordingAsc(Long userId, LocalDate start, LocalDate end);
+
+    Optional<Daily> findByUserId(Long userId);
 }

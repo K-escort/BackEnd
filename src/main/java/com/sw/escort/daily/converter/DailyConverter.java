@@ -24,14 +24,9 @@ public class DailyConverter {
 //                .build();
 //    }
 
-    public Daily toEntity(DailyDtoReq.RecordDailyReq dto, User user) {
-        String name = user.getRole().name();
-
+    public Daily toEntity(DailyDtoReq.RecordFeedbackReq dto, User user) {
         return Daily.builder()
-                .user(user)
-                .dailyDayRecording(dto.getDailyDayRecording())
-                .conversation(dto.getConversation())
-                .feedback((name.equals("HEALER")) ? dto.getFeedback() : null)
+                .feedback(dto.getFeedback())
                 .build();
     }
 

@@ -7,8 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface DailyVideoRepository extends JpaRepository<DailyVideo, Long> {
-    List<DailyVideo> findByDaily(Daily daily);
+    Optional<DailyVideo> findByDaily(Daily daily);
 }

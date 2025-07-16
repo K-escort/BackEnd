@@ -27,7 +27,7 @@ public class DailyVideo extends BaseEntity {
 
     private Long fileSize;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "daily_id")
     private Daily daily;
 }

@@ -45,6 +45,13 @@ public enum ErrorStatus implements BaseErrorCode {
     DAILY_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "DAILY4000", "이미 데일리가 존재합니다"),
     DAILY_NOT_FOUND(HttpStatus.NOT_FOUND, "DAILY4004", "해당 날짜의 기록이 없습니다."),
     FILE_ONLY_THREE(HttpStatus.BAD_REQUEST, "FILE4002", "파일은 3개만 업로드할 수 있습니다"),
+    ONLY_HEALER(HttpStatus.BAD_REQUEST, "DAILY4005", "치료사만 피드백 기록이 가능합니다"),
+
+    //DailyConversation
+    DAILY_CONVERSATION_NOT_FOUND(HttpStatus.NOT_FOUND,"DAILYCONVERSATION4000", "대화를 찾을 수 없습니다."),
+
+    //DailyVideo
+    DAILY_VIDEO_NOT_FOUND(HttpStatus.NOT_FOUND,"DAILYVIDEO4000", "영상을 찾을 수 없습니다."),
 
     //paging
     INVALID_PAGE_PARAMETER(HttpStatus.BAD_REQUEST, "PAGE400", "잘못된 페이지 값입니다. 1 이상의 정수로 입력해주세요."),
