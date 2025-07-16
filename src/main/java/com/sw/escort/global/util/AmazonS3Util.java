@@ -55,12 +55,28 @@ public class AmazonS3Util {
     private final long MAX_FILE_SIZE = 10 * 1024 * 1024;
 
     public Optional<String> getPublicDataImageUrlIfExists(String fileName) {
-        String key = publicDataPath + "/" + fileName;
-        if (!amazonS3.doesObjectExist(bucket, key)) {
+        // 확장자 있는 경우 그대로 시도
+        if (fileName.contains(".")) {
+            String key = publicDataPath + "/" + fileName;
+            if (amazonS3.doesObjectExist(bucket, key)) {
+                return Optional.of(amazonS3.getUrl(bucket, key).toString());
+            }
             return Optional.empty();
         }
-        return Optional.of(amazonS3.getUrl(bucket, key).toString());
+
+        // 확장자 없는 경우 여러 확장자 붙여서 탐색
+        List<String> supportedExtensions = List.of(".jpg", ".jpeg", ".png", ".JPG");
+
+        for (String ext : supportedExtensions) {
+            String key = publicDataPath + "/" + fileName + ext;
+            if (amazonS3.doesObjectExist(bucket, key)) {
+                return Optional.of(amazonS3.getUrl(bucket, key).toString());
+            }
+        }
+
+        return Optional.empty();
     }
+
 
 
     public String uploadImage(MultipartFile file, String folder) {
