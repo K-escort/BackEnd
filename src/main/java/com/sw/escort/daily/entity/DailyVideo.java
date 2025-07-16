@@ -23,10 +23,8 @@ public class DailyVideo extends BaseEntity {
     @Column(nullable = false)
     private String originalFilename;
 
-    @Column
     private String contentType;
 
-    @Column
     private Long fileSize;
 
     @ManyToOne(fetch = FetchType.LAZY)

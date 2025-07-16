@@ -39,6 +39,7 @@ public enum ErrorStatus implements BaseErrorCode {
     FILE_UPLOAD_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "FILE4003", "파일 업로드에 실패했습니다."),
     IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "FILE4004", "해당 이미지를 찾을 수 없습니다."),
     INVALID_VIDEO_FILE_TYPE(HttpStatus.BAD_REQUEST,"FILE4005","영상 파일만 업로드해주세요" ),
+    DAILY_IMAGE_SAVE_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "DAILY_IMAGE_500", "생성된 이미지 저장에 실패했습니다."),
 
     //Daily
     DAILY_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "DAILY4000", "이미 데일리가 존재합니다"),

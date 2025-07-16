@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public class DailyDtoReq {
     @Getter
@@ -24,6 +23,5 @@ public class DailyDtoReq {
     @AllArgsConstructor
     public static class DailyImageGenerationReq {
         private Long dailyId;
-        private List<Long> photoIds;
     }
 }

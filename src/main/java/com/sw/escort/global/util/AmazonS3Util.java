@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AmazonS3Util {
 
-    private final AmazonS3 amazonS3Client;
     private final AmazonS3 amazonS3;
     private final DailyImageRepository dailyImageRepository;
     private final DailyVideoRepository dailyVideoRepository;
@@ -102,7 +101,7 @@ public class AmazonS3Util {
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(multipartFile.getSize());
             metadata.setContentType(contentType);
-            amazonS3Client.putObject(bucket, key, multipartFile.getInputStream(), metadata);
+            amazonS3.putObject(bucket, key, multipartFile.getInputStream(), metadata);
 
             DailyImage newdailyImage = DailyImage.builder()
                     .uuid(uuid)
@@ -163,7 +162,7 @@ public class AmazonS3Util {
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(multipartFile.getSize());
             metadata.setContentType(contentType);
-            amazonS3Client.putObject(bucket, key, multipartFile.getInputStream(), metadata);
+            amazonS3.putObject(bucket, key, multipartFile.getInputStream(), metadata);
 
             DailyVideo newdailyVideo = DailyVideo.builder()
                     .uuid(uuid)
@@ -180,7 +179,7 @@ public class AmazonS3Util {
     }
 
     @Transactional
-    public String uploadDailyImageAndSaveMeta(MultipartFile file, Daily daily) {
+    public DailyImage uploadDailyImageAndSaveMeta(MultipartFile file, Daily daily) {
         validateImage(file);
 
         String uuid = UUID.randomUUID().toString();
@@ -190,7 +189,9 @@ public class AmazonS3Util {
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(file.getSize());
             metadata.setContentType(file.getContentType());
-            amazonS3Client.putObject(bucket, key, file.getInputStream(), metadata);
+
+            amazonS3.putObject(bucket, key, file.getInputStream(), metadata);
+            String url = amazonS3.getUrl(bucket, key).toString();
 
             DailyImage dailyImage = DailyImage.builder()
                     .uuid(uuid)
@@ -198,10 +199,11 @@ public class AmazonS3Util {
                     .contentType(file.getContentType())
                     .fileSize(file.getSize())
                     .daily(daily)
+                    .url(url)
                     .build();
 
             dailyImageRepository.save(dailyImage);
-            return amazonS3Client.getUrl(bucket, key).toString();
+            return dailyImage;
 
         } catch (IOException e) {
             throw new GeneralException(ErrorStatus.FILE_UPLOAD_FAIL);
