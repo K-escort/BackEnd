@@ -22,7 +22,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+//일단 공모전 용이라 동기처리로 다 함 -> 여러 명의 사용자들이 동시에 접속하는 경우나 한명의 사용자가 여러 환자 데이터를 동시에 요청하는 일이 없음.
 @Component
 @RequiredArgsConstructor
 public class PythonAiClient {
